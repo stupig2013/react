@@ -570,13 +570,14 @@ function legacyRenderSubtreeIntoContainer(
     // Initial mount should not be batched.
     unbatchedUpdates(() => {
       if (parentComponent != null) {
+        console.log('root.legacy_renderSubtreeIntoContainer (has parentComponent)', children)
         root.legacy_renderSubtreeIntoContainer(
           parentComponent,
           children,
           callback,
         );
       } else {
-        console.log('root.render(no parentComponent)', children)
+        console.log('<ReactRoot> root.render (no parentComponent)', children)
         root.render(children, callback);
       }
     });

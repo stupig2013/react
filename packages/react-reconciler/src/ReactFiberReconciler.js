@@ -151,7 +151,7 @@ function scheduleRootUpdate(
     );
     update.callback = callback;
   }
-  console.log('scheduleRootUpdate', update)
+  console.log('scheduleRootUpdate', 'create update:', update)
 
   flushPassiveEffects();
   enqueueUpdate(current, update);
@@ -188,7 +188,7 @@ export function updateContainerAtExpirationTime(
   } else {
     container.pendingContext = context;
   }
-
+  console.log('updateContainerAtExpirationTime', 'context:', context)
   return scheduleRootUpdate(current, element, expirationTime, callback);
 }
 

@@ -1155,7 +1155,7 @@ function performUnitOfWork(workInProgress: Fiber): Fiber | null {
     if (workInProgress.mode & ProfileMode) {
       startProfilerTimer(workInProgress);
     }
-
+    
     next = beginWork(current, workInProgress, nextRenderExpirationTime);
     workInProgress.memoizedProps = workInProgress.pendingProps;
 
@@ -1214,7 +1214,7 @@ function renderRoot(root: FiberRoot, isYieldy: boolean): void {
   );
 
   flushPassiveEffects();
-
+  console.log('renderRoot')
   isWorking = true;
   const previousDispatcher = ReactCurrentDispatcher.current;
   ReactCurrentDispatcher.current = ContextOnlyDispatcher;
@@ -1713,7 +1713,7 @@ function scheduleWorkToRoot(fiber: Fiber, expirationTime): FiberRoot | null {
       warnAboutInvalidUpdates(instance);
     }
   }
-
+  
   // Update the source fiber's expiration time
   if (fiber.expirationTime < expirationTime) {
     fiber.expirationTime = expirationTime;
@@ -1751,6 +1751,7 @@ function scheduleWorkToRoot(fiber: Fiber, expirationTime): FiberRoot | null {
       node = node.return;
     }
   }
+  console.log('scheduleWorkToRoot', root)
 
   if (enableSchedulerTracing) {
     if (root !== null) {
@@ -1810,6 +1811,8 @@ export function warnIfNotCurrentlyBatchingInDev(fiber: Fiber): void {
 }
 
 function scheduleWork(fiber: Fiber, expirationTime: ExpirationTime) {
+  console.log(`scheduleWork (isWorking: ${isWorking}, isCommitting: ${isCommitting})`)
+
   const root = scheduleWorkToRoot(fiber, expirationTime);
   if (root === null) {
     if (__DEV__) {
@@ -1827,7 +1830,7 @@ function scheduleWork(fiber: Fiber, expirationTime: ExpirationTime) {
     }
     return;
   }
-
+  
   if (
     !isWorking &&
     nextRenderExpirationTime !== NoWork &&
@@ -2064,6 +2067,7 @@ function requestCurrentTime() {
 // requestWork is called by the scheduler whenever a root receives an update.
 // It's up to the renderer to call renderRoot at some point in the future.
 function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
+  console.log(`requestWork (isRendering: ${isRendering}, ${expirationTime})`)
   addRootToSchedule(root, expirationTime);
   if (isRendering) {
     // Prevent reentrancy. Remaining work will be scheduled at the end of
@@ -2072,6 +2076,7 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
   }
 
   if (isBatchingUpdates) {
+    console.log('isBatchingUpdates', expirationTime)
     // Flush work at the end of the batch.
     if (isUnbatchingUpdates) {
       // ...unless we're inside unbatchedUpdates, in which case we should
@@ -2085,6 +2090,7 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
 
   // TODO: Get rid of Sync and use current time?
   if (expirationTime === Sync) {
+    console.log('performSyncWork')
     performSyncWork();
   } else {
     scheduleCallbackWithExpirationTime(root, expirationTime);
@@ -2338,11 +2344,11 @@ function performWorkOnRoot(
     'performWorkOnRoot was called recursively. This error is likely caused ' +
       'by a bug in React. Please file an issue.',
   );
-
   isRendering = true;
 
   // Check if this is async work or sync/expired work.
   if (!isYieldy) {
+    console.log('performWorkOnRoot (sync/expired)')
     // Flush work without yielding.
     // TODO: Non-yieldy work does not necessarily imply expired work. A renderer
     // may want to perform some work without yielding, but also without

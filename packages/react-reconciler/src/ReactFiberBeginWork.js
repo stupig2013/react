@@ -1795,6 +1795,7 @@ function beginWork(
   workInProgress: Fiber,
   renderExpirationTime: ExpirationTime,
 ): Fiber | null {
+  console.log('beginWork', workInProgress, renderExpirationTime)
   const updateExpirationTime = workInProgress.expirationTime;
 
   if (current !== null) {

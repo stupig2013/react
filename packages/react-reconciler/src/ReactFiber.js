@@ -351,6 +351,7 @@ export function createWorkInProgress(
 ): Fiber {
   let workInProgress = current.alternate;
   if (workInProgress === null) {
+    console.log('createWorkInProgress (create alternate)')
     // We use a double buffering pooling technique because we know that we'll
     // only ever need at most two versions of a tree. We pool the "other" unused
     // node that we're free to reuse. This is lazily created to avoid allocating
@@ -376,6 +377,7 @@ export function createWorkInProgress(
     workInProgress.alternate = current;
     current.alternate = workInProgress;
   } else {
+    console.log('createWorkInProgress (reset alternate)')
     workInProgress.pendingProps = pendingProps;
 
     // We already have an alternate.

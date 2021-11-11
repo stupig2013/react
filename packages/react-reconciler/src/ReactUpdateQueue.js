@@ -273,6 +273,8 @@ export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
     }
   }
 
+  console.log('enqueueUpdates', queue1, queue2)
+
   if (__DEV__) {
     if (
       fiber.tag === ClassComponent &&
