@@ -169,6 +169,8 @@ const ReactElement = function(type, key, ref, self, source, owner, props) {
  * See https://reactjs.org/docs/react-api.html#createelement
  */
 export function createElement(type, config, children) {
+  console.log(`createElement <${typeof type === 'function' ? type.name : type}>`)
+  
   let propName;
 
   // Reserved names are extracted

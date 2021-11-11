@@ -22,7 +22,6 @@ import describeComponentFrame from 'shared/describeComponentFrame';
 import getComponentName from 'shared/getComponentName';
 
 const ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
-
 type LifeCyclePhase = 'render' | 'getChildContext';
 
 function describeFiber(fiber: Fiber): string {

@@ -544,6 +544,7 @@ function legacyRenderSubtreeIntoContainer(
   forceHydrate: boolean,
   callback: ?Function,
 ) {
+  
   if (__DEV__) {
     topLevelUpdateWarnings(container);
   }
@@ -552,11 +553,13 @@ function legacyRenderSubtreeIntoContainer(
   // member of intersection type." Whyyyyyy.
   let root: Root = (container._reactRootContainer: any);
   if (!root) {
+    console.log('legacyRenderSubtreeIntoContainer (mount)')
     // Initial mount
     root = container._reactRootContainer = legacyCreateRootFromDOMContainer(
       container,
       forceHydrate,
     );
+    console.log('legacyCreateRootFromDOMContainer', root)
     if (typeof callback === 'function') {
       const originalCallback = callback;
       callback = function() {
@@ -573,6 +576,7 @@ function legacyRenderSubtreeIntoContainer(
           callback,
         );
       } else {
+        console.log('root.render(no parentComponent)', children)
         root.render(children, callback);
       }
     });
@@ -675,6 +679,8 @@ const ReactDOM: Object = {
     container: DOMContainer,
     callback: ?Function,
   ) {
+    console.log('render entry')
+    
     invariant(
       isValidContainer(container),
       'Target container is not a DOM element.',

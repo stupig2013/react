@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>react dev demo</title>
+    <!-- Delete ".min" for console warnings in development -->
+    <script src="../build/dist/react.development.js"></script>
+    <script src="../build/dist/react-dom.development.js"></script>
+  </head>
+  <body>
+    <!-- app -->
+    <div id="app" style="height: 1000px;">
+    </div>
+
+    <script>
+      // const {createElement} = React
+      
+      // class App extends React.Component {
+      //   constructor(props) {
+      //     super(props)
+      //     this.state = {
+      //       a: 1
+      //     }
+      //   }
+
+      //   onClick = () => {
+      //     this.setState({
+      //       a: this.state.a + 1
+      //     })
+      //   }
+
+      //   render() {
+      //     const {a} = this.state
+      //     return createElement('div', null, [
+      //       createElement('h3', {key: 'h3', className: 'c1'}, 'hello react'),
+      //       createElement('div', {key: 'div1'}, `a: ${a}`),
+      //       createElement('button', {key: 'button', onClick: this.onClick}, 'button')
+      //     ])
+      //   }
+      // }
+
+      // ReactDOM.render(createElement(App), document.getElementById('app'))
+
+      setTimeout(function() {
+        console.log(111)
+        var stop = Date.now() + 5000;
+      while (Date.now() < stop) {
+      }
+      console.log(222)
+      }, 3000)
+
+      
+    </script>
+  </body>
+</html>

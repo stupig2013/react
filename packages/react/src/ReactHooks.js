@@ -66,6 +66,7 @@ export function useContext<T>(
 }
 
 export function useState<S>(initialState: (() => S) | S) {
+  console.log('useState')
   const dispatcher = resolveDispatcher();
   return dispatcher.useState(initialState);
 }
