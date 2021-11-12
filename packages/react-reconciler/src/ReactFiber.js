@@ -350,7 +350,7 @@ export function createWorkInProgress(
   expirationTime: ExpirationTime,
 ): Fiber {
   const debugName = fiber => {
-    return typeof fiber.type === 'function' ? fiber.type.name : fiber.type || 'HostRoot'
+    return typeof fiber.type === 'function' ? fiber.type.name : fiber.type || `WorkTag ${fiber.tag}`
   }
 
   let workInProgress = current.alternate;
@@ -541,7 +541,7 @@ export function createFiberFromTypeAndProps(
   fiber.type = resolvedType;
   fiber.expirationTime = expirationTime;
 
-  console.log(`createFiberFromTypeAndProps`, fiber)
+  // console.log(`createFiberFromTypeAndProps`, fiber)
 
   return fiber;
 }
@@ -551,7 +551,7 @@ export function createFiberFromElement(
   mode: TypeOfMode,
   expirationTime: ExpirationTime,
 ): Fiber {
-  console.log('createFiberFromElement')
+  // console.log('createFiberFromElement')
   let owner = null;
   if (__DEV__) {
     owner = element._owner;

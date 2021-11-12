@@ -105,6 +105,8 @@ import {StrictMode} from './ReactTypeOfMode';
 import invariant from 'shared/invariant';
 import warningWithoutStack from 'shared/warningWithoutStack';
 
+import {getDebugFiberName} from 'shared/debug'
+
 export type Update<State> = {
   expirationTime: ExpirationTime,
 
@@ -273,7 +275,7 @@ export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
     }
   }
 
-  console.log(`<${typeof fiber.type === 'function' ? fiber.type.name : fiber.type || 'HostRoot'}> enqueueUpdates`, queue1, queue2)
+  console.log(`<${getDebugFiberName(fiber)}> enqueueUpdates`, queue1, queue2)
 
   if (__DEV__) {
     if (
@@ -560,7 +562,7 @@ export function processUpdateQueue<State>(
   // that regardless.
   workInProgress.expirationTime = newExpirationTime;
   workInProgress.memoizedState = resultState;
-  console.log(`<${typeof workInProgress.type === 'function' ? workInProgress.type.name : workInProgress.type || 'HostRoot' }> reactUpdateQueue, resultState:`, resultState)
+  console.log(`<${getDebugFiberName(workInProgress)}> reactUpdateQueue, resultState:`, resultState)
 
   if (__DEV__) {
     currentlyProcessingQueue = null;

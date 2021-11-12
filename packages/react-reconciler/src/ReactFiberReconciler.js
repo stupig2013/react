@@ -65,6 +65,8 @@ import {
 import {StrictMode} from './ReactTypeOfMode';
 import {Sync} from './ReactFiberExpirationTime';
 
+import {getDebugFiberName} from 'shared/debug'
+
 type OpaqueRoot = FiberRoot;
 
 // 0 is PROD, 1 is DEV.
@@ -151,7 +153,7 @@ function scheduleRootUpdate(
     );
     update.callback = callback;
   }
-  console.log(`<${typeof current.type === 'function' ? current.type.name : current.type || 'HostRoot'}> scheduleRootUpdate,`, 'create update:', update)
+  console.log(`<${getDebugFiberName(current)}> scheduleRootUpdate,`, 'create update:', update)
 
   flushPassiveEffects();
   enqueueUpdate(current, update);

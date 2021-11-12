@@ -11,6 +11,7 @@ import type {Fiber} from './ReactFiber';
 import type {Batch, FiberRoot} from './ReactFiberRoot';
 import type {ExpirationTime} from './ReactFiberExpirationTime';
 import type {Interaction} from 'scheduler/src/Tracing';
+import {getDebugFiberName} from 'shared/debug'
 
 import {
   __interactionsRef,
@@ -1131,7 +1132,7 @@ function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
 }
 
 function performUnitOfWork(workInProgress: Fiber): Fiber | null {
-  console.log(`<${typeof workInProgress.type === 'function' ? workInProgress.type.name : workInProgress.type || 'HostRoot' }> performUnitOfWork`, workInProgress)
+  console.log(`<${getDebugFiberName(workInProgress)}> performUnitOfWork`, workInProgress)
   // The current, flushed, state of this fiber is the alternate.
   // Ideally nothing should rely on this, but relying on it here
   // means that we don't need an additional field on the work in
@@ -1754,7 +1755,7 @@ function scheduleWorkToRoot(fiber: Fiber, expirationTime): FiberRoot | null {
       node = node.return;
     }
   }
-  console.log(`<${typeof fiber.type === 'function' ? fiber.type.name : fiber.type || 'HostRoot'}> scheduleWorkToRoot`, root)
+  console.log(`<${getDebugFiberName(fiber)}> scheduleWorkToRoot`, root)
 
   if (enableSchedulerTracing) {
     if (root !== null) {
@@ -1814,7 +1815,7 @@ export function warnIfNotCurrentlyBatchingInDev(fiber: Fiber): void {
 }
 
 function scheduleWork(fiber: Fiber, expirationTime: ExpirationTime) {
-  console.log(`<${typeof fiber.type === 'function' ? fiber.type.name : fiber.type || 'HostRoot'}> scheduleWork (isWorking: ${isWorking}, isCommitting: ${isCommitting})`)
+  console.log(`<${getDebugFiberName(fiber)}> scheduleWork (isWorking: ${isWorking}, isCommitting: ${isCommitting})`)
 
   const root = scheduleWorkToRoot(fiber, expirationTime);
   if (root === null) {

@@ -15,6 +15,7 @@ import invariant from 'shared/invariant';
 
 import {getChildHostContext, getRootHostContext} from './ReactFiberHostConfig';
 import {createCursor, push, pop} from './ReactFiberStack';
+import {getDebugFiberName} from 'shared/debug'
 
 declare class NoContextT {}
 const NO_CONTEXT: NoContextT = ({}: any);
@@ -44,7 +45,7 @@ function getRootHostContainer(): Container {
 }
 
 function pushHostContainer(fiber: Fiber, nextRootInstance: Container) {
-  console.log(`<${typeof fiber.type === 'function' ? fiber.type.name : fiber.type || 'HostRoot' }> pushHostContainer`)
+  console.log(`<${getDebugFiberName(fiber)}> pushHostContainer`)
   // Push current root instance onto the stack;
   // This allows us to reset root when portals are popped.
   push(rootInstanceStackCursor, nextRootInstance, fiber);
