@@ -45,7 +45,7 @@ function getRootHostContainer(): Container {
 }
 
 function pushHostContainer(fiber: Fiber, nextRootInstance: Container) {
-  console.log(`<${getDebugFiberName(fiber)}> pushHostContainer`)
+  console.log(`${getDebugFiberName(fiber)} pushHostContainer`)
   // Push current root instance onto the stack;
   // This allows us to reset root when portals are popped.
   push(rootInstanceStackCursor, nextRootInstance, fiber);

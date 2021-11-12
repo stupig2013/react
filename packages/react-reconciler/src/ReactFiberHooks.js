@@ -293,7 +293,7 @@ export function renderWithHooks(
   refOrContext: any,
   nextRenderExpirationTime: ExpirationTime,
 ): any {
-  console.log(`<${getDebugFiberName(workInProgress)}> renderWithHooks`)
+  console.log(`${getDebugFiberName(workInProgress)} renderWithHooks`)
   renderExpirationTime = nextRenderExpirationTime;
   currentlyRenderingFiber = workInProgress;
   firstCurrentHook = nextCurrentHook =

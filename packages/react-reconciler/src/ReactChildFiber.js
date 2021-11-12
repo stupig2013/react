@@ -1125,7 +1125,7 @@ function ChildReconciler(shouldTrackSideEffects) {
             ? element.type === REACT_FRAGMENT_TYPE
             : child.elementType === element.type
         ) {
-          console.log(`<${getDebugFiberName(element)}> is the same with current child (key: ${key})`)
+          console.log(`${getDebugFiberName(element)} is the same with current child (key: ${key})`)
           deleteRemainingChildren(returnFiber, child.sibling);
           const existing = useFiber(
             child,

@@ -153,7 +153,7 @@ function scheduleRootUpdate(
     );
     update.callback = callback;
   }
-  console.log(`<${getDebugFiberName(current)}> scheduleRootUpdate,`, 'create update:', update)
+  console.log(`${getDebugFiberName(current)} scheduleRootUpdate,`, 'create update:', update)
 
   flushPassiveEffects();
   enqueueUpdate(current, update);

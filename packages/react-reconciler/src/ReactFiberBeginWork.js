@@ -152,7 +152,7 @@ export function reconcileChildren(
   nextChildren: any,
   renderExpirationTime: ExpirationTime,
 ) {
-  console.log(`<${getDebugFiberName(workInProgress)}> reconcileChildren`, current && current.child, nextChildren)
+  console.log(`${getDebugFiberName(workInProgress)} reconcileChildren`, current && current.child, nextChildren)
   if (current === null) {
     // If this is a fresh new component that hasn't been rendered yet, we
     // won't update its child set by applying minimal side-effects. Instead,
@@ -619,6 +619,7 @@ function updateClassComponent(
   nextProps,
   renderExpirationTime: ExpirationTime,
 ) {
+  console.log(`${getDebugFiberName(workInProgress)} updateClassComponent`)
   if (__DEV__) {
     if (workInProgress.type !== workInProgress.elementType) {
       // Lazy component props can't be validated in createElement
@@ -1136,7 +1137,7 @@ function mountIndeterminateComponent(
   Component,
   renderExpirationTime,
 ) {
-  console.log(`<${getDebugFiberName(workInProgress)}> mountIndeterminateComponent`)
+  console.log(`${getDebugFiberName(workInProgress)} mountIndeterminateComponent`)
   if (_current !== null) {
     // An indeterminate component only mounts if it suspended inside a non-
     // concurrent tree, in an inconsistent state. We want to treat it like
@@ -1801,7 +1802,7 @@ function beginWork(
   workInProgress: Fiber,
   renderExpirationTime: ExpirationTime,
 ): Fiber | null {
-  console.log(`<${getDebugFiberName(workInProgress)}> beginWork`, workInProgress)
+  console.log(`${getDebugFiberName(workInProgress)} beginWork`, workInProgress)
   const updateExpirationTime = workInProgress.expirationTime;
 
   if (current !== null) {
@@ -1809,12 +1810,12 @@ function beginWork(
     const newProps = workInProgress.pendingProps;
 
     if (oldProps !== newProps || hasLegacyContextChanged()) {
-      console.log(`<${getDebugFiberName(workInProgress)}> didReceiveUpdate: true`, oldProps, newProps)
+      console.log(`${getDebugFiberName(workInProgress)} didReceiveUpdate: true`, oldProps, newProps)
       // If props or context changed, mark the fiber as having performed work.
       // This may be unset if the props are determined to be equal later (memo).
       didReceiveUpdate = true;
     } else if (updateExpirationTime < renderExpirationTime) {
-      console.log(`<${getDebugFiberName(workInProgress)}> didReceiveUpdate: false (updateExpirationTime: ${updateExpirationTime}, renderExpirationTime: ${renderExpirationTime})`)
+      console.log(`${getDebugFiberName(workInProgress)} didReceiveUpdate: false (updateExpirationTime: ${updateExpirationTime}, renderExpirationTime: ${renderExpirationTime})`)
       didReceiveUpdate = false;
       // This fiber does not have any pending work. Bailout without entering
       // the begin phase. There's still some bookkeeping we that needs to be done

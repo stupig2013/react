@@ -4,12 +4,16 @@ const fiberTagMap = {
 }
 
 export function getDebugFiberName(fiber) {
+  let rs
   switch (typeof fiber.type) {
     case 'function':
-      return fiber.type.name
+      rs = fiber.type.name
+      break
     case 'string':
-      return fiber.type
+      rs = fiber.type
+      break
     default:
-      return fiberTagMap[fiber.tag] || `WorkTag ${fiber.tag}`
+      rs = fiberTagMap[fiber.tag] || `WorkTag ${fiber.tag}`
   }
+  return `<${rs}>`
 }

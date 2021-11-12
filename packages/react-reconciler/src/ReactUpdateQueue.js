@@ -275,7 +275,7 @@ export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
     }
   }
 
-  console.log(`<${getDebugFiberName(fiber)}> enqueueUpdates`, queue1, queue2)
+  console.log(`${getDebugFiberName(fiber)} enqueueUpdates`, queue1, queue2)
 
   if (__DEV__) {
     if (
@@ -562,7 +562,7 @@ export function processUpdateQueue<State>(
   // that regardless.
   workInProgress.expirationTime = newExpirationTime;
   workInProgress.memoizedState = resultState;
-  console.log(`<${getDebugFiberName(workInProgress)}> reactUpdateQueue, resultState:`, resultState)
+  console.log(`${getDebugFiberName(workInProgress)} reactUpdateQueue, resultState:`, resultState)
 
   if (__DEV__) {
     currentlyProcessingQueue = null;

@@ -379,7 +379,7 @@ export function createWorkInProgress(
 
     workInProgress.alternate = current;
     current.alternate = workInProgress;
-    console.log(`<${debugName(workInProgress)}> createWorkInProgress (create alternate)`)
+    console.log(`${debugName(workInProgress)} createWorkInProgress (create alternate)`)
   } else {
     workInProgress.pendingProps = pendingProps;
 
@@ -400,7 +400,7 @@ export function createWorkInProgress(
       workInProgress.actualDuration = 0;
       workInProgress.actualStartTime = -1;
     }
-    console.log(`<${debugName(workInProgress)}> createWorkInProgress (reset alternate)`)
+    console.log(`${debugName(workInProgress)} createWorkInProgress (reset alternate)`)
   }
 
   workInProgress.childExpirationTime = current.childExpirationTime;
