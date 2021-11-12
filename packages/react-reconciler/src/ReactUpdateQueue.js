@@ -273,7 +273,7 @@ export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
     }
   }
 
-  console.log('enqueueUpdates', queue1, queue2)
+  console.log(`<${typeof fiber.type === 'function' ? fiber.type.name : fiber.type || 'HostRoot'}> enqueueUpdates`, queue1, queue2)
 
   if (__DEV__) {
     if (
@@ -466,6 +466,7 @@ export function processUpdateQueue<State>(
         props,
         instance,
       );
+
       const callback = update.callback;
       if (callback !== null) {
         workInProgress.effectTag |= Callback;
@@ -559,6 +560,7 @@ export function processUpdateQueue<State>(
   // that regardless.
   workInProgress.expirationTime = newExpirationTime;
   workInProgress.memoizedState = resultState;
+  console.log(`<${typeof workInProgress.type === 'function' ? workInProgress.type.name : workInProgress.type || 'HostRoot' }> reactUpdateQueue, resultState:`, resultState)
 
   if (__DEV__) {
     currentlyProcessingQueue = null;

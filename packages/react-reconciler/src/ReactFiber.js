@@ -349,9 +349,12 @@ export function createWorkInProgress(
   pendingProps: any,
   expirationTime: ExpirationTime,
 ): Fiber {
+  const debugName = fiber => {
+    return typeof fiber.type === 'function' ? fiber.type.name : fiber.type || 'HostRoot'
+  }
+
   let workInProgress = current.alternate;
   if (workInProgress === null) {
-    console.log('createWorkInProgress (create alternate)')
     // We use a double buffering pooling technique because we know that we'll
     // only ever need at most two versions of a tree. We pool the "other" unused
     // node that we're free to reuse. This is lazily created to avoid allocating
@@ -376,8 +379,8 @@ export function createWorkInProgress(
 
     workInProgress.alternate = current;
     current.alternate = workInProgress;
+    console.log(`<${debugName(workInProgress)}> createWorkInProgress (create alternate)`)
   } else {
-    console.log('createWorkInProgress (reset alternate)')
     workInProgress.pendingProps = pendingProps;
 
     // We already have an alternate.
@@ -397,6 +400,7 @@ export function createWorkInProgress(
       workInProgress.actualDuration = 0;
       workInProgress.actualStartTime = -1;
     }
+    console.log(`<${debugName(workInProgress)}> createWorkInProgress (reset alternate)`)
   }
 
   workInProgress.childExpirationTime = current.childExpirationTime;
@@ -537,6 +541,8 @@ export function createFiberFromTypeAndProps(
   fiber.type = resolvedType;
   fiber.expirationTime = expirationTime;
 
+  console.log(`createFiberFromTypeAndProps`, fiber)
+
   return fiber;
 }
 
@@ -545,6 +551,7 @@ export function createFiberFromElement(
   mode: TypeOfMode,
   expirationTime: ExpirationTime,
 ): Fiber {
+  console.log('createFiberFromElement')
   let owner = null;
   if (__DEV__) {
     owner = element._owner;

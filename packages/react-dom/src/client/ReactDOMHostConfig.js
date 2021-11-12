@@ -131,6 +131,7 @@ export function getRootHostContext(
   if (__DEV__) {
     const validatedTag = type.toLowerCase();
     const ancestorInfo = updatedAncestorInfo(null, validatedTag);
+    // console.log(`<${rootContainerInstance.tagName.toLowerCase()}#${rootContainerInstance.id}> getRootHostContext`, namespace)
     return {namespace, ancestorInfo};
   }
   return namespace;

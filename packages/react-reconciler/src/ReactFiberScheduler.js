@@ -1131,6 +1131,7 @@ function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
 }
 
 function performUnitOfWork(workInProgress: Fiber): Fiber | null {
+  console.log(`<${typeof workInProgress.type === 'function' ? workInProgress.type.name : workInProgress.type || 'HostRoot' }> performUnitOfWork`, workInProgress)
   // The current, flushed, state of this fiber is the alternate.
   // Ideally nothing should rely on this, but relying on it here
   // means that we don't need an additional field on the work in
@@ -1193,6 +1194,7 @@ function performUnitOfWork(workInProgress: Fiber): Fiber | null {
 }
 
 function workLoop(isYieldy) {
+  console.log('[Scheduler] workloop start, nextUnitOfWork:', nextUnitOfWork)
   if (!isYieldy) {
     // Flush work without yielding
     while (nextUnitOfWork !== null) {
@@ -1204,6 +1206,7 @@ function workLoop(isYieldy) {
       nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
     }
   }
+  console.log('[Scheduler] workloop end')
 }
 
 function renderRoot(root: FiberRoot, isYieldy: boolean): void {
@@ -1214,7 +1217,7 @@ function renderRoot(root: FiberRoot, isYieldy: boolean): void {
   );
 
   flushPassiveEffects();
-  console.log('renderRoot')
+  console.log(`<FiberRoot #${root.containerInfo.id}> renderRoot start (isWorking = true)`)
   isWorking = true;
   const previousDispatcher = ReactCurrentDispatcher.current;
   ReactCurrentDispatcher.current = ContextOnlyDispatcher;
@@ -1294,7 +1297,6 @@ function renderRoot(root: FiberRoot, isYieldy: boolean): void {
   let didFatal = false;
 
   startWorkLoopTimer(nextUnitOfWork);
-
   do {
     try {
       workLoop(isYieldy);
@@ -1508,6 +1510,7 @@ function renderRoot(root: FiberRoot, isYieldy: boolean): void {
 
   // Ready to commit.
   onComplete(root, rootWorkInProgress, expirationTime);
+  console.log(`<FiberRoot #${root.containerInfo.id}> renderRoot end`)
 }
 
 function captureCommitPhaseError(sourceFiber: Fiber, value: mixed) {
@@ -1751,7 +1754,7 @@ function scheduleWorkToRoot(fiber: Fiber, expirationTime): FiberRoot | null {
       node = node.return;
     }
   }
-  console.log('scheduleWorkToRoot', root)
+  console.log(`<${typeof fiber.type === 'function' ? fiber.type.name : fiber.type || 'HostRoot'}> scheduleWorkToRoot`, root)
 
   if (enableSchedulerTracing) {
     if (root !== null) {
@@ -1811,7 +1814,7 @@ export function warnIfNotCurrentlyBatchingInDev(fiber: Fiber): void {
 }
 
 function scheduleWork(fiber: Fiber, expirationTime: ExpirationTime) {
-  console.log(`scheduleWork (isWorking: ${isWorking}, isCommitting: ${isCommitting})`)
+  console.log(`<${typeof fiber.type === 'function' ? fiber.type.name : fiber.type || 'HostRoot'}> scheduleWork (isWorking: ${isWorking}, isCommitting: ${isCommitting})`)
 
   const root = scheduleWorkToRoot(fiber, expirationTime);
   if (root === null) {
@@ -2067,7 +2070,7 @@ function requestCurrentTime() {
 // requestWork is called by the scheduler whenever a root receives an update.
 // It's up to the renderer to call renderRoot at some point in the future.
 function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
-  console.log(`requestWork (isRendering: ${isRendering}, ${expirationTime})`)
+  console.log(`<FiberRoot #${root.containerInfo.id}> requestWork (isRendering: ${isRendering}, ${expirationTime})`)
   addRootToSchedule(root, expirationTime);
   if (isRendering) {
     // Prevent reentrancy. Remaining work will be scheduled at the end of
@@ -2076,7 +2079,7 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
   }
 
   if (isBatchingUpdates) {
-    console.log('isBatchingUpdates', expirationTime)
+    console.log('[Scheduler] isBatchingUpdates', expirationTime)
     // Flush work at the end of the batch.
     if (isUnbatchingUpdates) {
       // ...unless we're inside unbatchedUpdates, in which case we should
@@ -2090,7 +2093,7 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
 
   // TODO: Get rid of Sync and use current time?
   if (expirationTime === Sync) {
-    console.log('performSyncWork')
+    console.log('[Scheduler] performSyncWork')
     performSyncWork();
   } else {
     scheduleCallbackWithExpirationTime(root, expirationTime);
@@ -2184,6 +2187,7 @@ function findHighestPriorityRoot() {
 
   nextFlushedRoot = highestPriorityRoot;
   nextFlushedExpirationTime = highestPriorityWork;
+  console.log('[Scheduler] findHighestPriorityRoot: ', nextFlushedRoot)
 }
 
 // TODO: This wrapper exists because many of the older tests (the ones that use
@@ -2233,6 +2237,7 @@ function performWork(minExpirationTime: ExpirationTime, isYieldy: boolean) {
   // Keep working on roots until there's no more work, or until there's a higher
   // priority event.
   findHighestPriorityRoot();
+  console.log(`[Scheduler] performWork start (minExpirationTime: ${minExpirationTime}) nextFlushedRoot:`, nextFlushedRoot)
 
   if (isYieldy) {
     recomputeCurrentRendererTime();
@@ -2288,6 +2293,7 @@ function performWork(minExpirationTime: ExpirationTime, isYieldy: boolean) {
 
   // Clean-up.
   finishRendering();
+  console.log(`[Scheduler] performWork end`)
 }
 
 function flushRoot(root: FiberRoot, expirationTime: ExpirationTime) {
@@ -2348,7 +2354,7 @@ function performWorkOnRoot(
 
   // Check if this is async work or sync/expired work.
   if (!isYieldy) {
-    console.log('performWorkOnRoot (sync/expired)')
+    console.log(`<FiberRoot #${root.containerInfo.id}> performWorkOnRoot start (sync/expired, isRendering = true)`)
     // Flush work without yielding.
     // TODO: Non-yieldy work does not necessarily imply expired work. A renderer
     // may want to perform some work without yielding, but also without
@@ -2409,6 +2415,7 @@ function performWorkOnRoot(
   }
 
   isRendering = false;
+  console.log(`<FiberRoot #${root.containerInfo.id}> performWorkOnRoot end (isRendering = false)`)
 }
 
 function completeRoot(

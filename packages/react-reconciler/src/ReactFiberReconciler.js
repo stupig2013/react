@@ -151,7 +151,7 @@ function scheduleRootUpdate(
     );
     update.callback = callback;
   }
-  console.log('scheduleRootUpdate', 'create update:', update)
+  console.log(`<${typeof current.type === 'function' ? current.type.name : current.type || 'HostRoot'}> scheduleRootUpdate,`, 'create update:', update)
 
   flushPassiveEffects();
   enqueueUpdate(current, update);
@@ -188,7 +188,7 @@ export function updateContainerAtExpirationTime(
   } else {
     container.pendingContext = context;
   }
-  console.log('updateContainerAtExpirationTime', 'context:', context)
+  console.log(`<FiberRoot #${container.containerInfo.id}> updateContainerAtExpirationTime`, 'context:', context)
   return scheduleRootUpdate(current, element, expirationTime, callback);
 }
 
@@ -290,7 +290,7 @@ export function updateContainer(
   const current = container.current;
   const currentTime = requestCurrentTime();
   const expirationTime = computeExpirationForFiber(currentTime, current);
-  console.log(`updateContainer (currentTime: ${currentTime}, expirationTime: ${expirationTime})`)
+  console.log(`<FiberRoot #${container.containerInfo.id}> updateContainer (currentTime: ${currentTime}, expirationTime: ${expirationTime})`)
   
   return updateContainerAtExpirationTime(
     element,
