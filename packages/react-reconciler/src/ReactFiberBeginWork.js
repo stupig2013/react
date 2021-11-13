@@ -765,6 +765,7 @@ function finishClassComponent(
   } else {
     if (__DEV__) {
       setCurrentPhase('render');
+      console.log(`${getDebugFiberName(workInProgress)} render`)
       nextChildren = instance.render();
       if (
         debugRenderPhaseSideEffects ||
@@ -904,6 +905,7 @@ function updateHostRoot(current, workInProgress, renderExpirationTime) {
 }
 
 function updateHostComponent(current, workInProgress, renderExpirationTime) {
+  console.log(`${getDebugFiberName(workInProgress)} updateHostComponent start`)
   pushHostContext(workInProgress);
 
   if (current === null) {
@@ -948,6 +950,7 @@ function updateHostComponent(current, workInProgress, renderExpirationTime) {
     nextChildren,
     renderExpirationTime,
   );
+  console.log(`${getDebugFiberName(workInProgress)} updateHostComponent end, return nextUnitOfWork:`, workInProgress.child)
   return workInProgress.child;
 }
 

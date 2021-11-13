@@ -946,6 +946,7 @@ function resetChildExpirationTime(
 }
 
 function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
+  console.log(`${getDebugFiberName(workInProgress)} completeUnitOfWork`)
   // Attempt to complete the current unit of work, then move to the
   // next sibling. If there are no more siblings, return to the
   // parent fiber.
