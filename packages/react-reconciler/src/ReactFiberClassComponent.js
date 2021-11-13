@@ -55,6 +55,8 @@ import {
   flushPassiveEffects,
 } from './ReactFiberScheduler';
 
+import {getDebugFiberName} from 'shared/debug'
+
 const fakeInternalInstance = {};
 const isArray = Array.isArray;
 
@@ -509,6 +511,7 @@ function constructClassInstance(
   props: any,
   renderExpirationTime: ExpirationTime,
 ): any {
+  console.log(`${getDebugFiberName(workInProgress)} constructClassInstance`)
   let isLegacyContextConsumer = false;
   let unmaskedContext = emptyContextObject;
   let context = null;
@@ -557,6 +560,7 @@ function constructClassInstance(
     instance.state !== null && instance.state !== undefined
       ? instance.state
       : null);
+  console.log(`${getDebugFiberName(workInProgress)} init state:`, state)
   adoptClassInstance(workInProgress, instance);
 
   if (__DEV__) {
@@ -722,6 +726,7 @@ function mountClassInstance(
   newProps: any,
   renderExpirationTime: ExpirationTime,
 ): void {
+  console.log(`${getDebugFiberName(workInProgress)} mountClassInstance`)
   if (__DEV__) {
     checkClassInstance(workInProgress, ctor, newProps);
   }
@@ -820,7 +825,6 @@ function mountClassInstance(
       instance.state = workInProgress.memoizedState;
     }
   }
-
   if (typeof instance.componentDidMount === 'function') {
     workInProgress.effectTag |= Update;
   }

@@ -20,6 +20,7 @@ export function markPendingPriorityLevel(
   root: FiberRoot,
   expirationTime: ExpirationTime,
 ): void {
+  console.log('[Scheduler] markPendingPriorityLevel')
   // If there's a gap between completing a failed root and retrying it,
   // additional updates may be scheduled. Clear `didError`, in case the update
   // is sufficient to fix the error.

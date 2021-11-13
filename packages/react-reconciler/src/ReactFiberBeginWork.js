@@ -619,7 +619,7 @@ function updateClassComponent(
   nextProps,
   renderExpirationTime: ExpirationTime,
 ) {
-  console.log(`${getDebugFiberName(workInProgress)} updateClassComponent`)
+  console.log(`${getDebugFiberName(workInProgress)} updateClassComponent start`)
   if (__DEV__) {
     if (workInProgress.type !== workInProgress.elementType) {
       // Lazy component props can't be validated in createElement
@@ -713,6 +713,7 @@ function updateClassComponent(
       didWarnAboutReassigningProps = true;
     }
   }
+  console.log(`${getDebugFiberName(workInProgress)} updateClassComponent end, return nextUnitOfWork:`, nextUnitOfWork)
   return nextUnitOfWork;
 }
 
@@ -898,7 +899,7 @@ function updateHostRoot(current, workInProgress, renderExpirationTime) {
     );
     resetHydrationState();
   }
-  console.log(`<HostRoot> updateHostRoot end, return: `, workInProgress.child)
+  console.log(`<HostRoot> updateHostRoot end, return nextUnitOfWork: `, workInProgress.child)
   return workInProgress.child;
 }
 

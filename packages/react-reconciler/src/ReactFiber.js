@@ -61,6 +61,8 @@ import {
   REACT_LAZY_TYPE,
 } from 'shared/ReactSymbols';
 
+import {getDebugFiberName} from 'shared/debug'
+
 let hasBadMapPolyfill;
 
 if (__DEV__) {
@@ -349,10 +351,6 @@ export function createWorkInProgress(
   pendingProps: any,
   expirationTime: ExpirationTime,
 ): Fiber {
-  const debugName = fiber => {
-    return typeof fiber.type === 'function' ? fiber.type.name : fiber.type || `WorkTag ${fiber.tag}`
-  }
-
   let workInProgress = current.alternate;
   if (workInProgress === null) {
     // We use a double buffering pooling technique because we know that we'll
@@ -379,7 +377,7 @@ export function createWorkInProgress(
 
     workInProgress.alternate = current;
     current.alternate = workInProgress;
-    console.log(`${debugName(workInProgress)} createWorkInProgress (create alternate)`)
+    console.log(`${getDebugFiberName(workInProgress)} createWorkInProgress (create alternate)`)
   } else {
     workInProgress.pendingProps = pendingProps;
 
@@ -400,7 +398,7 @@ export function createWorkInProgress(
       workInProgress.actualDuration = 0;
       workInProgress.actualStartTime = -1;
     }
-    console.log(`${debugName(workInProgress)} createWorkInProgress (reset alternate)`)
+    console.log(`${getDebugFiberName(workInProgress)} createWorkInProgress (reset alternate)`)
   }
 
   workInProgress.childExpirationTime = current.childExpirationTime;
@@ -551,7 +549,6 @@ export function createFiberFromElement(
   mode: TypeOfMode,
   expirationTime: ExpirationTime,
 ): Fiber {
-  // console.log('createFiberFromElement')
   let owner = null;
   if (__DEV__) {
     owner = element._owner;
