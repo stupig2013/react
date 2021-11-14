@@ -82,11 +82,12 @@ function pushHostContext(fiber: Fiber): void {
   );
   const context: HostContext = requiredContext(contextStackCursor.current);
   const nextContext = getChildHostContext(context, fiber.type, rootInstance);
-
+  
   // Don't push this Fiber's context unless it's unique.
   if (context === nextContext) {
     return;
   }
+  console.log(`${getDebugFiberName(fiber)} pushHostContext`, nextContext)
 
   // Track the context and the Fiber that provided it.
   // This enables us to pop only Fibers that provide unique contexts.
@@ -100,6 +101,7 @@ function popHostContext(fiber: Fiber): void {
   if (contextFiberStackCursor.current !== fiber) {
     return;
   }
+  console.log(`${getDebugFiberName(fiber)} popHostContext`)
 
   pop(contextStackCursor, fiber);
   pop(contextFiberStackCursor, fiber);

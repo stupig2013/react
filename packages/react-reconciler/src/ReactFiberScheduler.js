@@ -597,6 +597,7 @@ function flushPassiveEffects() {
 }
 
 function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
+  console.log('[Scheduler] commitRoot start')
   isWorking = true;
   isCommitting = true;
   startCommitTimer();
@@ -656,6 +657,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
 
   prepareForCommit(root.containerInfo);
 
+  console.log('[Scheduler] invoke instances getSnapshotBeforeUpdate start')
   // Invoke instances of getSnapshotBeforeUpdate before mutation.
   nextEffect = firstEffect;
   startCommitSnapshotEffectsTimer();
@@ -690,6 +692,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     }
   }
   stopCommitSnapshotEffectsTimer();
+  console.log('[Scheduler] invoke instances getSnapshotBeforeUpdate end')
 
   if (enableProfilerTimer) {
     // Mark the current commit time to be shared by all Profilers in this batch.
@@ -697,6 +700,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     recordCommitTime();
   }
 
+  console.log('[Scheduler] commit side-effects start')
   // Commit all the side-effects within a tree. We'll do this in two passes.
   // The first pass performs all the host insertions, updates, deletions and
   // ref unmounts.
@@ -733,6 +737,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     }
   }
   stopCommitHostEffectsTimer();
+  console.log('[Scheduler] commit side-effects end')
 
   resetAfterCommit(root.containerInfo);
 
@@ -742,6 +747,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
   // the finished work is current during componentDidMount/Update.
   root.current = finishedWork;
 
+  console.log('[Scheduler] perform lifecycles start')
   // In the second pass we'll perform all life-cycles and ref callbacks.
   // Life-cycles happen as a separate pass so that all placements, updates,
   // and deletions in the entire tree have already been invoked.
@@ -783,6 +789,8 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
       }
     }
   }
+
+  console.log('[Scheduler] perform lifecycles end')
 
   if (firstEffect !== null && rootWithPendingPassiveEffects !== null) {
     // This commit included a passive effect. These do not need to fire until
@@ -877,6 +885,8 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
       );
     }
   }
+
+  console.log('[Scheduler] commitRoot end')
 }
 
 function resetChildExpirationTime(
@@ -1049,9 +1059,11 @@ function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
 
       if (siblingFiber !== null) {
         // If there is more work to do in this returnFiber, do that next.
+        console.log(`${getDebugFiberName(workInProgress)} return siblingFiber ${getDebugFiberName(siblingFiber)} as nextUnitOfWork:`, siblingFiber)
         return siblingFiber;
       } else if (returnFiber !== null) {
         // If there's no more work in this returnFiber. Complete the returnFiber.
+        console.log(`${getDebugFiberName(workInProgress)} use returnFiber ${getDebugFiberName(returnFiber)} as completeUnitOfWork next:`, returnFiber)
         workInProgress = returnFiber;
         continue;
       } else {
@@ -1512,7 +1524,7 @@ function renderRoot(root: FiberRoot, isYieldy: boolean): void {
 
   // Ready to commit.
   onComplete(root, rootWorkInProgress, expirationTime);
-  console.log(`<FiberRoot #${root.containerInfo.id}> renderRoot end`)
+  console.log(`<FiberRoot #${root.containerInfo.id}> renderRoot end (isWorking = false)`)
 }
 
 function captureCommitPhaseError(sourceFiber: Fiber, value: mixed) {
@@ -1979,6 +1991,7 @@ function onComplete(
   finishedWork: Fiber,
   expirationTime: ExpirationTime,
 ) {
+  console.log(`${getDebugFiberName(root)} onComplete`)
   root.pendingCommitExpirationTime = expirationTime;
   root.finishedWork = finishedWork;
 }
@@ -2273,6 +2286,7 @@ function performWork(minExpirationTime: ExpirationTime, isYieldy: boolean) {
       minExpirationTime <= nextFlushedExpirationTime
     ) {
       performWorkOnRoot(nextFlushedRoot, nextFlushedExpirationTime, false);
+      console.log(`[Scheduler] performWork continue (nextFlushedExpirationTime: ${nextFlushedExpirationTime}, minExpirationTime: ${minExpirationTime})`)
       findHighestPriorityRoot();
     }
   }

@@ -950,6 +950,7 @@ function updateHostComponent(current, workInProgress, renderExpirationTime) {
     nextChildren,
     renderExpirationTime,
   );
+
   console.log(`${getDebugFiberName(workInProgress)} updateHostComponent end, return nextUnitOfWork:`, workInProgress.child)
   return workInProgress.child;
 }
@@ -1897,6 +1898,7 @@ function beginWork(
           break;
         }
       }
+      console.log(`${getDebugFiberName(workInProgress)} didReceiveUpdate: ${didReceiveUpdate}, return bailoutOnAlreadyFinishedWork() as nextUnitOfWork`)
       return bailoutOnAlreadyFinishedWork(
         current,
         workInProgress,

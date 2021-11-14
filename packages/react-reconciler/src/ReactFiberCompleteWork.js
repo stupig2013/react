@@ -82,6 +82,7 @@ import {
   prepareToHydrateHostTextInstance,
   popHydrationState,
 } from './ReactFiberHydrationContext';
+import { getDebugFiberName } from 'shared/debug';
 
 function markUpdate(workInProgress: Fiber) {
   // Tag the fiber with an update effect. This turns a Placement into
@@ -111,6 +112,7 @@ if (supportsMutation) {
     let node = workInProgress.child;
     while (node !== null) {
       if (node.tag === HostComponent || node.tag === HostText) {
+        console.log(`<${parent.tagName.toLowerCase()}> appendChild ${getDebugFiberName(node)}`)
         appendInitialChild(parent, node.stateNode);
       } else if (node.tag === HostPortal) {
         // If we have a portal child, then we don't want to traverse
@@ -541,6 +543,7 @@ function completeWork(
   workInProgress: Fiber,
   renderExpirationTime: ExpirationTime,
 ): Fiber | null {
+  console.log(`${getDebugFiberName(workInProgress)} completeWork`)
   const newProps = workInProgress.pendingProps;
 
   switch (workInProgress.tag) {
@@ -632,6 +635,7 @@ function completeWork(
             currentHostContext,
             workInProgress,
           );
+          console.log(`${getDebugFiberName(workInProgress)} createInstance, instance:`, instance)
 
           appendAllChildren(instance, workInProgress, false, false);
 
