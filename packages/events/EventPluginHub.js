@@ -41,6 +41,7 @@ let eventQueue: ?(Array<ReactSyntheticEvent> | ReactSyntheticEvent) = null;
  */
 const executeDispatchesAndRelease = function(event: ReactSyntheticEvent) {
   if (event) {
+    console.log(`[Event] executeDispatchesAndRelease`)
     executeDispatchesInOrder(event);
 
     if (!event.isPersistent()) {
@@ -180,12 +181,14 @@ function extractEvents(
       }
     }
   }
+  console.log(`[Event] extractEvents, events:`, events)
   return events;
 }
 
 export function runEventsInBatch(
   events: Array<ReactSyntheticEvent> | ReactSyntheticEvent | null,
 ) {
+  console.log(`[Event] runEventsInBatch`)
   if (events !== null) {
     eventQueue = accumulateInto(eventQueue, events);
   }
@@ -215,6 +218,7 @@ export function runExtractedEventsInBatch(
   nativeEvent: AnyNativeEvent,
   nativeEventTarget: EventTarget,
 ) {
+  console.log(`[Event] runExtractedEventsInBatch (NativeEvent: ${topLevelType})`)
   const events = extractEvents(
     topLevelType,
     targetInst,

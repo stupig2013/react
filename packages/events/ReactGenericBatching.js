@@ -32,6 +32,7 @@ export function batchedUpdates(fn, bookkeeping) {
     // fully completes before restoring state.
     return fn(bookkeeping);
   }
+  console.log(`[Event] batchedUpdates start (isBatching = true)`)
   isBatching = true;
   try {
     return _batchedUpdatesImpl(fn, bookkeeping);
@@ -41,6 +42,7 @@ export function batchedUpdates(fn, bookkeeping) {
     // https://github.com/facebook/react/issues/1698
     // Then we restore state of any controlled component.
     isBatching = false;
+    console.log(`[Event] batchedUpdates end (isBatching = false)`)
     const controlledComponentsHavePendingUpdates = needsStateRestore();
     if (controlledComponentsHavePendingUpdates) {
       // If a controlled event was fired, we may need to restore the state of

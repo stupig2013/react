@@ -2542,6 +2542,7 @@ function interactiveUpdates<A, B, R>(fn: (A, B) => R, a: A, b: B): R {
   if (isBatchingInteractiveUpdates) {
     return fn(a, b);
   }
+
   // If there are any pending interactive updates, synchronously flush them.
   // This needs to happen before we read any handlers, because the effect of
   // the previous event may influence which handlers are called during
@@ -2559,11 +2560,13 @@ function interactiveUpdates<A, B, R>(fn: (A, B) => R, a: A, b: B): R {
   const previousIsBatchingUpdates = isBatchingUpdates;
   isBatchingInteractiveUpdates = true;
   isBatchingUpdates = true;
+  console.log(`[Scheduler] interactiveUpdates (isBatchingInteractiveUpdates = ${isBatchingInteractiveUpdates}, isBatchingUpdates = ${isBatchingUpdates})`)
   try {
     return fn(a, b);
   } finally {
     isBatchingInteractiveUpdates = previousIsBatchingInteractiveUpdates;
     isBatchingUpdates = previousIsBatchingUpdates;
+    console.log(`[Scheduler] interactiveUpdates finally (isBatchingInteractiveUpdates = ${isBatchingInteractiveUpdates}, isBatchingUpdates = ${isBatchingUpdates}, isRendering: ${isRendering})`)
     if (!isBatchingUpdates && !isRendering) {
       performSyncWork();
     }
