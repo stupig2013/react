@@ -23,6 +23,7 @@ import SimpleEventPlugin from '../events/SimpleEventPlugin';
 /**
  * Inject modules for resolving DOM hierarchy and plugin ordering.
  */
+console.log('[ReactDOM] injectEventPluginOrder')
 EventPluginHubInjection.injectEventPluginOrder(DOMEventPluginOrder);
 setComponentTree(
   getFiberCurrentPropsFromNode,

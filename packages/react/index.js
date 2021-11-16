@@ -8,7 +8,7 @@
  */
 
 'use strict';
-
+console.log('loading React index.js')
 const React = require('./src/React');
 
 // TODO: decide on the top-level export form.

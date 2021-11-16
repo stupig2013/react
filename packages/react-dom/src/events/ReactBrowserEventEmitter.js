@@ -127,6 +127,7 @@ export function listenTo(
   registrationName: string,
   mountAt: Document | Element,
 ) {
+  console.log(`[Event] listenTo ${registrationName}`)
   const isListening = getListeningForDocument(mountAt);
   const dependencies = registrationNameDependencies[registrationName];
 
@@ -168,6 +169,8 @@ export function listenTo(
           break;
       }
       isListening[dependency] = true;
+    } else {
+      console.log(`[Event] dependency '${dependencies}' is already listening`)
     }
   }
 }

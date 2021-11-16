@@ -2085,16 +2085,17 @@ function requestCurrentTime() {
 // requestWork is called by the scheduler whenever a root receives an update.
 // It's up to the renderer to call renderRoot at some point in the future.
 function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
-  console.log(`<FiberRoot #${root.containerInfo.id}> requestWork (isRendering: ${isRendering}, ${expirationTime})`)
   addRootToSchedule(root, expirationTime);
+
   if (isRendering) {
+    console.log(`<FiberRoot #${root.containerInfo.id}> requestWork (isRendering: ${isRendering}, isBatchingUpdates: ${isBatchingUpdates}, ${expirationTime})`)
     // Prevent reentrancy. Remaining work will be scheduled at the end of
     // the currently rendering batch.
     return;
   }
 
   if (isBatchingUpdates) {
-    console.log('[Scheduler] isBatchingUpdates', expirationTime)
+    console.log(`<FiberRoot #${root.containerInfo.id}> requestWork (isRendering: ${isRendering}, isBatchingUpdates: ${isBatchingUpdates}, isUnbatchingUpdates: ${isUnbatchingUpdates}, ${expirationTime})`)
     // Flush work at the end of the batch.
     if (isUnbatchingUpdates) {
       // ...unless we're inside unbatchedUpdates, in which case we should
@@ -2105,6 +2106,8 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
     }
     return;
   }
+
+  console.log(`<FiberRoot #${root.containerInfo.id}> requestWork (isRendering: ${isRendering}, isBatchingUpdates: ${isBatchingUpdates}, ${expirationTime})`)
 
   // TODO: Get rid of Sync and use current time?
   if (expirationTime === Sync) {

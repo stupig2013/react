@@ -138,6 +138,7 @@ export function trapBubbledEvent(
   topLevelType: DOMTopLevelEventType,
   element: Document | Element,
 ) {
+  console.log(`[Event] trapBubbledEvent ${topLevelType}`)
   if (!element) {
     return null;
   }
@@ -182,6 +183,7 @@ export function trapCapturedEvent(
 }
 
 function dispatchInteractiveEvent(topLevelType, nativeEvent) {
+  console.log(`[Event] dispatchInteractiveEvent (NativeEvent: ${topLevelType})`)
   interactiveUpdates(dispatchEvent, topLevelType, nativeEvent);
 }
 
@@ -192,6 +194,7 @@ export function dispatchEvent(
   if (!_enabled) {
     return;
   }
+  console.log(`[Event] dispatchEvent (NativeEvent: ${topLevelType})`)
 
   const nativeEventTarget = getEventTarget(nativeEvent);
   let targetInst = getClosestInstanceFromNode(nativeEventTarget);

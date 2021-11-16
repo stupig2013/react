@@ -47,8 +47,6 @@ import {
 import ReactSharedInternals from './ReactSharedInternals';
 import {enableStableConcurrentModeAPIs} from 'shared/ReactFeatureFlags';
 
-console.log('loading React index.js')
-
 const React = {
   Children: {
     map,
