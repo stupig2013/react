@@ -4,8 +4,9 @@ const fiberTagMap = {
 }
 
 const debugType = {
+  react: false,
   reconciler: true,
-  scheduler: true,
+  scheduler: false,
   event: false
 }
 
@@ -36,18 +37,35 @@ export function getDebugItemName(item) {
     rs = item
   } else if (typeof item === 'object') {
     switch (true) {
-      case item.hasOwnProperty('containerInfo'): // FiberRoot
+      case item.hasOwnProperty('containerInfo'): { // FiberRoot
         rs = `<FiberRoot${item.containerInfo ? ` #${item.containerInfo.id}` : ''}>`
         break
-      case item.hasOwnProperty('stateNode'): // Fiber
-        const fiber = item
-        const fiberName = typeof fiber.type === 'function' 
-        ? fiber.type.name
-        : typeof fiber.type === 'string'
-          ? fiber.type
-          : fiberTagMap[fiber.tag] || `WorkTag ${fiber.tag}`
-        rs = `<${fiberName}>`
+      }
+
+      case item.hasOwnProperty('stateNode'): { // Fiber
+        const name = typeof item.type === 'function' 
+        ? item.type.name
+        : typeof item.type === 'string'
+          ? item.type
+          : fiberTagMap[item.tag] || `WorkTag ${item.tag}`
+        rs = `<${name}>`
         break
+      }
+
+      case item.hasOwnProperty('$$typeof'): { // ReactElement
+        const name = typeof item.type === 'function' 
+        ? item.type.name
+        : typeof item.type === 'string'
+          ? item.type
+          : fiberTagMap[item.tag] || `WorkTag ${item.tag}`
+        rs = `<ReactElement:${name}>`
+        break
+      }
+
+      case item instanceof HTMLElement: {
+        rs = `<HTMLElement:${item.tagName.toLowerCase()}>`
+        break
+      }
     }
   }
 

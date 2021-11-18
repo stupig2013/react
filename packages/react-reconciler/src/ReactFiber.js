@@ -61,7 +61,7 @@ import {
   REACT_LAZY_TYPE,
 } from 'shared/ReactSymbols';
 
-import {getDebugFiberName} from 'shared/debug'
+import {debug} from 'shared/debug'
 
 let hasBadMapPolyfill;
 
@@ -377,7 +377,7 @@ export function createWorkInProgress(
 
     workInProgress.alternate = current;
     current.alternate = workInProgress;
-    console.log(`${getDebugFiberName(workInProgress)} createWorkInProgress (create alternate)`)
+    console.log(...debug.reconciler(workInProgress, 'createWorkInProgress (create alternate)'))
   } else {
     workInProgress.pendingProps = pendingProps;
 
@@ -398,7 +398,7 @@ export function createWorkInProgress(
       workInProgress.actualDuration = 0;
       workInProgress.actualStartTime = -1;
     }
-    console.log(`${getDebugFiberName(workInProgress)} createWorkInProgress (reset alternate)`)
+    console.log(...debug.reconciler(workInProgress, 'createWorkInProgress (reuse alternate)'))
   }
 
   workInProgress.childExpirationTime = current.childExpirationTime;
@@ -549,7 +549,7 @@ export function createFiberFromElement(
   mode: TypeOfMode,
   expirationTime: ExpirationTime,
 ): Fiber {
-  console.log(`${getDebugFiberName(element)} createFiberFromElement`)
+  console.log(...debug.reconciler(element, 'createFiberFromElement'))
   let owner = null;
   if (__DEV__) {
     owner = element._owner;

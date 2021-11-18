@@ -45,7 +45,7 @@ import {
 } from './ReactCurrentFiber';
 import {StrictMode} from './ReactTypeOfMode';
 
-import {getDebugFiberName} from 'shared/debug'
+import {getDebugFiberName, debug, getDebugItemName} from 'shared/debug'
 
 let didWarnAboutMaps;
 let didWarnAboutGenerators;
@@ -1147,7 +1147,7 @@ function ChildReconciler(shouldTrackSideEffects) {
             ? element.type === REACT_FRAGMENT_TYPE
             : child.elementType === element.type
         ) {
-          console.log(`${getDebugFiberName(returnFiber)} reconcileSingleElement ${getDebugFiberName(element)} (use existing fiber, key: ${key})`)
+          console.log(...debug.reconciler(returnFiber, `reconcileSingleElement ${getDebugItemName(element)} (use existing fiber, key: ${key})`))
           deleteRemainingChildren(returnFiber, child.sibling);
           const existing = useFiber(
             child,
@@ -1188,7 +1188,7 @@ function ChildReconciler(shouldTrackSideEffects) {
         returnFiber.mode,
         expirationTime,
       );
-      console.log(`${getDebugFiberName(returnFiber)} reconcileSingleElement ${getDebugFiberName(element)} (createFiberFromElement, ${created.alternate ? 'has' : 'no'} alternate)`)
+      console.log(...debug.reconciler(returnFiber, `reconcileSingleElement ${getDebugItemName(element)} (createFiberFromElement, ${created.alternate ? 'has' : 'no'} alternate)`))
       created.ref = coerceRef(returnFiber, currentFirstChild, element);
       created.return = returnFiber;
       return created;

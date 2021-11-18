@@ -78,6 +78,8 @@ import {validateProperties as validateARIAProperties} from '../shared/ReactDOMIn
 import {validateProperties as validateInputProperties} from '../shared/ReactDOMNullInputValuePropHook';
 import {validateProperties as validateUnknownProperties} from '../shared/ReactDOMUnknownPropertyHook';
 
+import {debug} from 'shared/debug'
+
 let didWarnInvalidHydration = false;
 let didWarnShadyDOM = false;
 
@@ -315,6 +317,7 @@ function setInitialDOMProperties(
       }
     } else if (propKey === CHILDREN) {
       if (typeof nextProp === 'string') {
+        console.log(...debug.reconciler(domElement, 'set children(string):', nextProp))
         // Avoid setting initial textContent when the text is empty. In IE11 setting
         // textContent on a <textarea> will cause the placeholder to not
         // show within the <textarea> until it has been focused and blurred again.
@@ -324,6 +327,7 @@ function setInitialDOMProperties(
           setTextContent(domElement, nextProp);
         }
       } else if (typeof nextProp === 'number') {
+        console.log(...debug.reconciler(domElement, 'set children(number):', nextProp))
         setTextContent(domElement, '' + nextProp);
       }
     } else if (
@@ -341,6 +345,7 @@ function setInitialDOMProperties(
         if (__DEV__ && typeof nextProp !== 'function') {
           warnForInvalidEventListener(propKey, nextProp);
         }
+        console.log(...debug.reconciler(domElement, 'set event:', propKey))
         ensureListeningTo(rootContainerElement, propKey);
       }
     } else if (nextProp != null) {
@@ -471,6 +476,7 @@ export function setInitialProperties(
   rawProps: Object,
   rootContainerElement: Element | Document,
 ): void {
+  console.log(...debug.reconciler(domElement, 'setInitialProperties, rawProps', rawProps))
   const isCustomComponentTag = isCustomComponent(tag, rawProps);
   if (__DEV__) {
     validatePropertiesInDevelopment(tag, rawProps);

@@ -28,6 +28,8 @@ import {
 } from './ReactDOMEventListener';
 import isEventSupported from './isEventSupported';
 
+import {debug} from 'shared/debug'
+
 /**
  * Summary of `ReactBrowserEventEmitter` event handling:
  *
@@ -127,7 +129,7 @@ export function listenTo(
   registrationName: string,
   mountAt: Document | Element,
 ) {
-  console.log(`[Event] listenTo ${registrationName}`)
+  console.log(...debug.reconciler(undefined, `listenTo ${registrationName} on`, mountAt))
   const isListening = getListeningForDocument(mountAt);
   const dependencies = registrationNameDependencies[registrationName];
 

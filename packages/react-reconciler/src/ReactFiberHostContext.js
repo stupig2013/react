@@ -15,7 +15,7 @@ import invariant from 'shared/invariant';
 
 import {getChildHostContext, getRootHostContext} from './ReactFiberHostConfig';
 import {createCursor, push, pop} from './ReactFiberStack';
-import {getDebugFiberName} from 'shared/debug'
+import {getDebugFiberName, debug} from 'shared/debug'
 
 declare class NoContextT {}
 const NO_CONTEXT: NoContextT = ({}: any);
@@ -45,7 +45,7 @@ function getRootHostContainer(): Container {
 }
 
 function pushHostContainer(fiber: Fiber, nextRootInstance: Container) {
-  console.log(`${getDebugFiberName(fiber)} pushHostContainer`)
+  console.log(...debug.reconciler(fiber, 'pushHostContainer'))
   // Push current root instance onto the stack;
   // This allows us to reset root when portals are popped.
   push(rootInstanceStackCursor, nextRootInstance, fiber);
@@ -66,6 +66,7 @@ function pushHostContainer(fiber: Fiber, nextRootInstance: Container) {
 }
 
 function popHostContainer(fiber: Fiber) {
+  console.log(...debug.reconciler(fiber, 'popHostContainer'))
   pop(contextStackCursor, fiber);
   pop(contextFiberStackCursor, fiber);
   pop(rootInstanceStackCursor, fiber);
@@ -87,7 +88,7 @@ function pushHostContext(fiber: Fiber): void {
   if (context === nextContext) {
     return;
   }
-  console.log(`${getDebugFiberName(fiber)} pushHostContext`, nextContext)
+  console.log(...debug.reconciler(fiber, 'pushHostContext', nextContext))
 
   // Track the context and the Fiber that provided it.
   // This enables us to pop only Fibers that provide unique contexts.
@@ -101,7 +102,7 @@ function popHostContext(fiber: Fiber): void {
   if (contextFiberStackCursor.current !== fiber) {
     return;
   }
-  console.log(`${getDebugFiberName(fiber)} popHostContext`)
+  console.log(...debug.reconciler(fiber, 'popHostContext'))
 
   pop(contextStackCursor, fiber);
   pop(contextFiberStackCursor, fiber);

@@ -22,6 +22,8 @@ import {getClosestInstanceFromNode} from '../client/ReactDOMComponentTree';
 import SimpleEventPlugin from './SimpleEventPlugin';
 import {getRawEventName} from './DOMTopLevelEventTypes';
 
+import {debug} from 'shared/debug'
+
 const {isInteractiveTopLevelEventType} = SimpleEventPlugin;
 
 const CALLBACK_BOOKKEEPING_POOL_SIZE = 10;
@@ -138,7 +140,7 @@ export function trapBubbledEvent(
   topLevelType: DOMTopLevelEventType,
   element: Document | Element,
 ) {
-  console.log(`[Event] trapBubbledEvent ${topLevelType}`)
+  console.log(...debug.reconciler(undefined, `trapBubbledEvent "${topLevelType}"`))
   if (!element) {
     return null;
   }
@@ -183,7 +185,7 @@ export function trapCapturedEvent(
 }
 
 function dispatchInteractiveEvent(topLevelType, nativeEvent) {
-  console.log(`[Event] dispatchInteractiveEvent (NativeEvent: ${topLevelType})`)
+  console.log(...debug.event(undefined, `dispatchInteractiveEvent (NativeEvent: ${topLevelType})`))
   interactiveUpdates(dispatchEvent, topLevelType, nativeEvent);
 }
 

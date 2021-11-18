@@ -126,7 +126,7 @@ import {
   isSimpleFunctionComponent,
 } from './ReactFiber';
 
-import {getDebugFiberName} from 'shared/debug'
+import {debug} from 'shared/debug'
 
 const ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
 
@@ -157,7 +157,7 @@ export function reconcileChildren(
     // won't update its child set by applying minimal side-effects. Instead,
     // we will add them all to the child before it gets rendered. That means
     // we can optimize this reconciliation pass by not tracking side-effects.
-    console.log(`${getDebugFiberName(workInProgress)} reconcileChildren (mountChildFibers, shouldTrackSideEffects: false)`, current, nextChildren)
+    console.log(...debug.reconciler(workInProgress, 'reconcileChildren (mountChildFibers, shouldTrackSideEffects: false)', current, nextChildren))
     workInProgress.child = mountChildFibers(
       workInProgress,
       null,
@@ -171,7 +171,7 @@ export function reconcileChildren(
 
     // If we had any progressed work already, that is invalid at this point so
     // let's throw it out.
-    console.log(`${getDebugFiberName(workInProgress)} reconcileChildren (reconcileChildFibers, shouldTrackSideEffects: true)`, current && current.child, nextChildren)
+    console.log(...debug.reconciler(workInProgress, `reconcileChildren (reconcileChildFibers, shouldTrackSideEffects: true)`, current && current.child, nextChildren))
     workInProgress.child = reconcileChildFibers(
       workInProgress,
       current.child,
@@ -620,7 +620,7 @@ function updateClassComponent(
   nextProps,
   renderExpirationTime: ExpirationTime,
 ) {
-  console.log(`${getDebugFiberName(workInProgress)} updateClassComponent start`)
+  console.log(...debug.reconciler(workInProgress, 'updateClassComponent start'))
   if (__DEV__) {
     if (workInProgress.type !== workInProgress.elementType) {
       // Lazy component props can't be validated in createElement
@@ -714,7 +714,7 @@ function updateClassComponent(
       didWarnAboutReassigningProps = true;
     }
   }
-  console.log(`${getDebugFiberName(workInProgress)} updateClassComponent end, return nextUnitOfWork:`, nextUnitOfWork)
+  console.log(...debug.reconciler(workInProgress, 'updateClassComponent end, return nextUnitOfWork:', nextUnitOfWork))
   return nextUnitOfWork;
 }
 
@@ -726,6 +726,7 @@ function finishClassComponent(
   hasContext: boolean,
   renderExpirationTime: ExpirationTime,
 ) {
+  console.log(...debug.reconciler(workInProgress, 'finishClassComponent'))
   // Refs should update even if shouldComponentUpdate returns false
   markRef(current, workInProgress);
 
@@ -766,8 +767,8 @@ function finishClassComponent(
   } else {
     if (__DEV__) {
       setCurrentPhase('render');
-      console.log(`${getDebugFiberName(workInProgress)} render`)
       nextChildren = instance.render();
+      console.log(...debug.reconciler(workInProgress, 'render'))
       if (
         debugRenderPhaseSideEffects ||
         (debugRenderPhaseSideEffectsForStrictMode &&
@@ -831,7 +832,7 @@ function pushHostRootContext(workInProgress) {
 }
 
 function updateHostRoot(current, workInProgress, renderExpirationTime) {
-  console.log(`<HostRoot> updateHostRoot start, updateQueue: `, workInProgress.updateQueue)
+  console.log(...debug.reconciler(workInProgress, 'updateHostRoot start, updateQueue:', workInProgress.updateQueue))
   pushHostRootContext(workInProgress);
   const updateQueue = workInProgress.updateQueue;
   invariant(
@@ -901,12 +902,12 @@ function updateHostRoot(current, workInProgress, renderExpirationTime) {
     );
     resetHydrationState();
   }
-  console.log(`<HostRoot> updateHostRoot end, return nextUnitOfWork: `, workInProgress.child)
+  console.log(...debug.reconciler(workInProgress, 'updateHostRoot end, return nextUnitOfWork:', workInProgress.child))
   return workInProgress.child;
 }
 
 function updateHostComponent(current, workInProgress, renderExpirationTime) {
-  console.log(`${getDebugFiberName(workInProgress)} updateHostComponent start`)
+  console.log(...debug.reconciler(workInProgress, 'updateHostComponent start'))
   pushHostContext(workInProgress);
 
   if (current === null) {
@@ -952,7 +953,7 @@ function updateHostComponent(current, workInProgress, renderExpirationTime) {
     renderExpirationTime,
   );
 
-  console.log(`${getDebugFiberName(workInProgress)} updateHostComponent end, return nextUnitOfWork:`, workInProgress.child)
+  console.log(...debug.reconciler(workInProgress, 'updateHostComponent end, return nextUnitOfWork:', workInProgress.child))
   return workInProgress.child;
 }
 
@@ -1143,7 +1144,7 @@ function mountIndeterminateComponent(
   Component,
   renderExpirationTime,
 ) {
-  console.log(`${getDebugFiberName(workInProgress)} mountIndeterminateComponent`)
+  console.log(...debug.reconcile(workInProgress, 'mountIndeterminateComponent'))
   if (_current !== null) {
     // An indeterminate component only mounts if it suspended inside a non-
     // concurrent tree, in an inconsistent state. We want to treat it like
@@ -1808,7 +1809,7 @@ function beginWork(
   workInProgress: Fiber,
   renderExpirationTime: ExpirationTime,
 ): Fiber | null {
-  console.log(`${getDebugFiberName(workInProgress)} beginWork`, workInProgress)
+  console.log(...debug.reconciler(workInProgress, 'beginWork'))
   const updateExpirationTime = workInProgress.expirationTime;
 
   if (current !== null) {
@@ -1816,12 +1817,12 @@ function beginWork(
     const newProps = workInProgress.pendingProps;
 
     if (oldProps !== newProps || hasLegacyContextChanged()) {
-      console.log(`${getDebugFiberName(workInProgress)} didReceiveUpdate: true`, oldProps, newProps)
+      console.log(...debug.reconciler(workInProgress, 'didReceiveUpdate: true', oldProps, newProps))
       // If props or context changed, mark the fiber as having performed work.
       // This may be unset if the props are determined to be equal later (memo).
       didReceiveUpdate = true;
     } else if (updateExpirationTime < renderExpirationTime) {
-      console.log(`${getDebugFiberName(workInProgress)} didReceiveUpdate: false (updateExpirationTime: ${updateExpirationTime}, renderExpirationTime: ${renderExpirationTime})`)
+      console.log(...debug.reconciler(workInProgress, `didReceiveUpdate: false (updateExpirationTime: ${updateExpirationTime}, renderExpirationTime: ${renderExpirationTime})`))
       didReceiveUpdate = false;
       // This fiber does not have any pending work. Bailout without entering
       // the begin phase. There's still some bookkeeping we that needs to be done
@@ -1899,7 +1900,7 @@ function beginWork(
           break;
         }
       }
-      console.log(`${getDebugFiberName(workInProgress)} didReceiveUpdate: ${didReceiveUpdate}, return bailoutOnAlreadyFinishedWork() as nextUnitOfWork`)
+      console.log(...debug.reconciler(workInProgress, `didReceiveUpdate: ${didReceiveUpdate}, return bailoutOnAlreadyFinishedWork() as nextUnitOfWork`))
       return bailoutOnAlreadyFinishedWork(
         current,
         workInProgress,

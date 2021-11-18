@@ -11,6 +11,8 @@ import {REACT_ELEMENT_TYPE} from 'shared/ReactSymbols';
 
 import ReactCurrentOwner from './ReactCurrentOwner';
 
+import {debug} from 'shared/debug'
+
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 const RESERVED_PROPS = {
@@ -169,7 +171,7 @@ const ReactElement = function(type, key, ref, self, source, owner, props) {
  * See https://reactjs.org/docs/react-api.html#createelement
  */
 export function createElement(type, config, children) {
-  console.log(`createElement <${typeof type === 'function' ? type.name : type}>`)
+  console.log(...debug.react(undefined, `createElement <${typeof type === 'function' ? type.name : type}>`))
   
   let propName;
 

@@ -11,7 +11,6 @@ import type {Fiber} from './ReactFiber';
 import type {Batch, FiberRoot} from './ReactFiberRoot';
 import type {ExpirationTime} from './ReactFiberExpirationTime';
 import type {Interaction} from 'scheduler/src/Tracing';
-import {getDebugFiberName, debug} from 'shared/debug'
 
 import {
   __interactionsRef,
@@ -164,6 +163,8 @@ import {
   commitPassiveHookEffects,
 } from './ReactFiberCommitWork';
 import {ContextOnlyDispatcher} from './ReactFiberHooks';
+
+import {debug, getDebugItemName} from 'shared/debug'
 
 export type Thenable = {
   then(resolve: () => mixed, reject?: () => mixed): mixed,
@@ -1059,11 +1060,11 @@ function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
 
       if (siblingFiber !== null) {
         // If there is more work to do in this returnFiber, do that next.
-        console.log(`${getDebugFiberName(workInProgress)} return siblingFiber ${getDebugFiberName(siblingFiber)} as nextUnitOfWork:`, siblingFiber)
+        console.log(...debug.scheduler(workInProgress, `return siblingFiber ${getDebugItemName(siblingFiber)} as nextUnitOfWork:`, siblingFiber))
         return siblingFiber;
       } else if (returnFiber !== null) {
         // If there's no more work in this returnFiber. Complete the returnFiber.
-        console.log(`${getDebugFiberName(workInProgress)} use returnFiber ${getDebugFiberName(returnFiber)} as completeUnitOfWork next:`, returnFiber)
+        console.log(...debug.scheduler(workInProgress, `use returnFiber ${getDebugItemName(returnFiber)} as completeUnitOfWork next:`, returnFiber))
         workInProgress = returnFiber;
         continue;
       } else {
@@ -1145,7 +1146,7 @@ function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
 }
 
 function performUnitOfWork(workInProgress: Fiber): Fiber | null {
-  console.log(`${getDebugFiberName(workInProgress)} performUnitOfWork`, workInProgress)
+  console.log(...debug.scheduler(workInProgress, 'performUnitOfWork', workInProgress))
   // The current, flushed, state of this fiber is the alternate.
   // Ideally nothing should rely on this, but relying on it here
   // means that we don't need an additional field on the work in
@@ -1208,7 +1209,7 @@ function performUnitOfWork(workInProgress: Fiber): Fiber | null {
 }
 
 function workLoop(isYieldy) {
-  console.log('[Scheduler] workloop start, nextUnitOfWork:', nextUnitOfWork)
+  console.log(...debug.scheduler(undefined, 'workloop start, nextUnitOfWork:', nextUnitOfWork))
   if (!isYieldy) {
     // Flush work without yielding
     while (nextUnitOfWork !== null) {
@@ -1220,7 +1221,7 @@ function workLoop(isYieldy) {
       nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
     }
   }
-  console.log('[Scheduler] workloop end')
+  console.log(...debug.scheduler(undefined, 'workloop end'))
 }
 
 function renderRoot(root: FiberRoot, isYieldy: boolean): void {
@@ -1991,7 +1992,7 @@ function onComplete(
   finishedWork: Fiber,
   expirationTime: ExpirationTime,
 ) {
-  console.log(`${getDebugFiberName(root)} onComplete`)
+  console.log(...debug.scheduler(root, 'onComplete'))
   root.pendingCommitExpirationTime = expirationTime;
   root.finishedWork = finishedWork;
 }
