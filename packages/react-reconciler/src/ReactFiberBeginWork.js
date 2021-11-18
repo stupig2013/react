@@ -152,12 +152,12 @@ export function reconcileChildren(
   nextChildren: any,
   renderExpirationTime: ExpirationTime,
 ) {
-  console.log(`${getDebugFiberName(workInProgress)} reconcileChildren`, current && current.child, nextChildren)
   if (current === null) {
     // If this is a fresh new component that hasn't been rendered yet, we
     // won't update its child set by applying minimal side-effects. Instead,
     // we will add them all to the child before it gets rendered. That means
     // we can optimize this reconciliation pass by not tracking side-effects.
+    console.log(`${getDebugFiberName(workInProgress)} reconcileChildren (mountChildFibers, shouldTrackSideEffects: false)`, current, nextChildren)
     workInProgress.child = mountChildFibers(
       workInProgress,
       null,
@@ -171,6 +171,7 @@ export function reconcileChildren(
 
     // If we had any progressed work already, that is invalid at this point so
     // let's throw it out.
+    console.log(`${getDebugFiberName(workInProgress)} reconcileChildren (reconcileChildFibers, shouldTrackSideEffects: true)`, current && current.child, nextChildren)
     workInProgress.child = reconcileChildFibers(
       workInProgress,
       current.child,

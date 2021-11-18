@@ -12,6 +12,8 @@ import type {ExpirationTime} from './ReactFiberExpirationTime';
 
 import {NoWork} from './ReactFiberExpirationTime';
 
+import {debug} from 'shared/debug'
+
 // TODO: Offscreen updates should never suspend. However, a promise that
 // suspended inside an offscreen subtree should be able to ping at the priority
 // of the outer render.
@@ -20,7 +22,7 @@ export function markPendingPriorityLevel(
   root: FiberRoot,
   expirationTime: ExpirationTime,
 ): void {
-  console.log('[Scheduler] markPendingPriorityLevel')
+  console.log(...debug.scheduler(root, 'markPendingPriorityLevel'))
   // If there's a gap between completing a failed root and retrying it,
   // additional updates may be scheduled. Clear `didError`, in case the update
   // is sufficient to fix the error.

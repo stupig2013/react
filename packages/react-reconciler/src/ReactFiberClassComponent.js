@@ -836,6 +836,7 @@ function resumeMountClassInstance(
   newProps: any,
   renderExpirationTime: ExpirationTime,
 ): boolean {
+  console.log(`${getDebugFiberName(workInProgress)} resumeMountClassInstance`)
   const instance = workInProgress.stateNode;
 
   const oldProps = workInProgress.memoizedProps;

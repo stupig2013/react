@@ -65,7 +65,7 @@ import {
 import {StrictMode} from './ReactTypeOfMode';
 import {Sync} from './ReactFiberExpirationTime';
 
-import {getDebugFiberName} from 'shared/debug'
+import {debug} from 'shared/debug'
 
 type OpaqueRoot = FiberRoot;
 
@@ -153,7 +153,8 @@ function scheduleRootUpdate(
     );
     update.callback = callback;
   }
-  console.log(`${getDebugFiberName(current)} scheduleRootUpdate,`, 'create update:', update)
+
+  console.log(...debug.reconciler(current, 'scheduleRootUpdate, create update:', update))
 
   flushPassiveEffects();
   enqueueUpdate(current, update);
@@ -190,7 +191,7 @@ export function updateContainerAtExpirationTime(
   } else {
     container.pendingContext = context;
   }
-  console.log(`<FiberRoot #${container.containerInfo.id}> updateContainerAtExpirationTime`, 'context:', context)
+  console.log(...debug.reconciler(container, 'updateContainerAtExpirationTime, context:', context))
   return scheduleRootUpdate(current, element, expirationTime, callback);
 }
 
@@ -292,7 +293,7 @@ export function updateContainer(
   const current = container.current;
   const currentTime = requestCurrentTime();
   const expirationTime = computeExpirationForFiber(currentTime, current);
-  console.log(`<FiberRoot #${container.containerInfo.id}> updateContainer (currentTime: ${currentTime}, expirationTime: ${expirationTime})`)
+  console.log(...debug.reconciler(container, `updateContainer (currentTime: ${currentTime}, expirationTime: ${expirationTime})`))
   
   return updateContainerAtExpirationTime(
     element,

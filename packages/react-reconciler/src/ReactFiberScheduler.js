@@ -11,7 +11,7 @@ import type {Fiber} from './ReactFiber';
 import type {Batch, FiberRoot} from './ReactFiberRoot';
 import type {ExpirationTime} from './ReactFiberExpirationTime';
 import type {Interaction} from 'scheduler/src/Tracing';
-import {getDebugFiberName} from 'shared/debug'
+import {getDebugFiberName, debug} from 'shared/debug'
 
 import {
   __interactionsRef,
@@ -956,7 +956,7 @@ function resetChildExpirationTime(
 }
 
 function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
-  console.log(`${getDebugFiberName(workInProgress)} completeUnitOfWork`)
+  console.log(...debug.scheduler(workInProgress, 'completeUnitOfWork'))
   // Attempt to complete the current unit of work, then move to the
   // next sibling. If there are no more siblings, return to the
   // parent fiber.
@@ -1231,7 +1231,7 @@ function renderRoot(root: FiberRoot, isYieldy: boolean): void {
   );
 
   flushPassiveEffects();
-  console.log(`<FiberRoot #${root.containerInfo.id}> renderRoot start (isWorking = true)`)
+  console.log(...debug.scheduler(root, 'renderRoot start (isWorking = true)'))
   isWorking = true;
   const previousDispatcher = ReactCurrentDispatcher.current;
   ReactCurrentDispatcher.current = ContextOnlyDispatcher;
@@ -1524,7 +1524,7 @@ function renderRoot(root: FiberRoot, isYieldy: boolean): void {
 
   // Ready to commit.
   onComplete(root, rootWorkInProgress, expirationTime);
-  console.log(`<FiberRoot #${root.containerInfo.id}> renderRoot end (isWorking = false)`)
+  console.log(...debug.scheduler(root, 'renderRoot end (isWorking = false)'))
 }
 
 function captureCommitPhaseError(sourceFiber: Fiber, value: mixed) {
@@ -1768,7 +1768,7 @@ function scheduleWorkToRoot(fiber: Fiber, expirationTime): FiberRoot | null {
       node = node.return;
     }
   }
-  console.log(`${getDebugFiberName(fiber)} scheduleWorkToRoot`, root)
+  console.log(...debug.scheduler(fiber, 'scheduleWorkToRoot, root:', root))
 
   if (enableSchedulerTracing) {
     if (root !== null) {
@@ -1828,7 +1828,7 @@ export function warnIfNotCurrentlyBatchingInDev(fiber: Fiber): void {
 }
 
 function scheduleWork(fiber: Fiber, expirationTime: ExpirationTime) {
-  console.log(`${getDebugFiberName(fiber)} scheduleWork (isWorking: ${isWorking}, isCommitting: ${isCommitting})`)
+  console.log(...debug.scheduler(fiber, `scheduleWork (isWorking: ${isWorking}, isCommitting: ${isCommitting})`))
 
   const root = scheduleWorkToRoot(fiber, expirationTime);
   if (root === null) {
@@ -2088,14 +2088,14 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
   addRootToSchedule(root, expirationTime);
 
   if (isRendering) {
-    console.log(`<FiberRoot #${root.containerInfo.id}> requestWork (isRendering: ${isRendering}, isBatchingUpdates: ${isBatchingUpdates}, ${expirationTime})`)
+    console.log(...debug.scheduler(root, `requestWork (isRendering: ${isRendering}, isBatchingUpdates: ${isBatchingUpdates}, ${expirationTime})`))
     // Prevent reentrancy. Remaining work will be scheduled at the end of
     // the currently rendering batch.
     return;
   }
 
   if (isBatchingUpdates) {
-    console.log(`<FiberRoot #${root.containerInfo.id}> requestWork (isRendering: ${isRendering}, isBatchingUpdates: ${isBatchingUpdates}, isUnbatchingUpdates: ${isUnbatchingUpdates}, ${expirationTime})`)
+    console.log(...debug.scheduler(root, `requestWork (isRendering: ${isRendering}, isBatchingUpdates: ${isBatchingUpdates}, isUnbatchingUpdates: ${isUnbatchingUpdates}, ${expirationTime})`))
     // Flush work at the end of the batch.
     if (isUnbatchingUpdates) {
       // ...unless we're inside unbatchedUpdates, in which case we should
@@ -2107,11 +2107,11 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
     return;
   }
 
-  console.log(`<FiberRoot #${root.containerInfo.id}> requestWork (isRendering: ${isRendering}, isBatchingUpdates: ${isBatchingUpdates}, ${expirationTime})`)
+  console.log(...debug.scheduler(root, `requestWork (isRendering: ${isRendering}, isBatchingUpdates: ${isBatchingUpdates}, ${expirationTime})`))
 
   // TODO: Get rid of Sync and use current time?
   if (expirationTime === Sync) {
-    console.log('[Scheduler] performSyncWork')
+    console.log(...debug.scheduler(undefined, 'performSyncWork'))
     performSyncWork();
   } else {
     scheduleCallbackWithExpirationTime(root, expirationTime);
@@ -2205,7 +2205,7 @@ function findHighestPriorityRoot() {
 
   nextFlushedRoot = highestPriorityRoot;
   nextFlushedExpirationTime = highestPriorityWork;
-  console.log('[Scheduler] findHighestPriorityRoot: ', nextFlushedRoot)
+  console.log(...debug.scheduler(undefined, 'findHighestPriorityRoot:', nextFlushedRoot))
 }
 
 // TODO: This wrapper exists because many of the older tests (the ones that use
@@ -2255,7 +2255,7 @@ function performWork(minExpirationTime: ExpirationTime, isYieldy: boolean) {
   // Keep working on roots until there's no more work, or until there's a higher
   // priority event.
   findHighestPriorityRoot();
-  console.log(`[Scheduler] performWork start (minExpirationTime: ${minExpirationTime}) nextFlushedRoot:`, nextFlushedRoot)
+  console.log(...debug.scheduler(undefined, `performWork start (minExpirationTime: ${minExpirationTime}) nextFlushedRoot:`, nextFlushedRoot))
 
   if (isYieldy) {
     recomputeCurrentRendererTime();
@@ -2373,7 +2373,7 @@ function performWorkOnRoot(
 
   // Check if this is async work or sync/expired work.
   if (!isYieldy) {
-    console.log(`<FiberRoot #${root.containerInfo.id}> performWorkOnRoot start (sync/expired, isRendering = true)`)
+    console.log(...debug.scheduler(root, 'performWorkOnRoot start (sync/expired, isRendering = true)'))
     // Flush work without yielding.
     // TODO: Non-yieldy work does not necessarily imply expired work. A renderer
     // may want to perform some work without yielding, but also without
@@ -2434,7 +2434,7 @@ function performWorkOnRoot(
   }
 
   isRendering = false;
-  console.log(`<FiberRoot #${root.containerInfo.id}> performWorkOnRoot end (isRendering = false)`)
+  console.log(...debug.scheduler(root, 'performWorkOnRoot end (isRendering = false)'))
 }
 
 function completeRoot(

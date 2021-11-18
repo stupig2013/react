@@ -549,6 +549,7 @@ export function createFiberFromElement(
   mode: TypeOfMode,
   expirationTime: ExpirationTime,
 ): Fiber {
+  console.log(`${getDebugFiberName(element)} createFiberFromElement`)
   let owner = null;
   if (__DEV__) {
     owner = element._owner;
