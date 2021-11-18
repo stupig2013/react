@@ -196,7 +196,7 @@ export function dispatchEvent(
   if (!_enabled) {
     return;
   }
-  console.log(`[Event] dispatchEvent (NativeEvent: ${topLevelType})`)
+  console.log(...debug.event(undefined, `dispatchEvent (NativeEvent: ${topLevelType})`))
 
   const nativeEventTarget = getEventTarget(nativeEvent);
   let targetInst = getClosestInstanceFromNode(nativeEventTarget);

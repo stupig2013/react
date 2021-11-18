@@ -45,7 +45,7 @@ import {
 } from './ReactCurrentFiber';
 import {StrictMode} from './ReactTypeOfMode';
 
-import {getDebugFiberName, debug, getDebugItemName} from 'shared/debug'
+import {debug, getDebugItemName} from 'shared/debug'
 
 let didWarnAboutMaps;
 let didWarnAboutGenerators;
@@ -269,7 +269,7 @@ function ChildReconciler(shouldTrackSideEffects) {
       // Noop.
       return null;
     }
-    console.log(`${getDebugFiberName(returnFiber)} deleteRemainingChildren`)
+    console.log(...debug.reconciler(returnFiber, 'deleteRemainingChildren'))
 
     // TODO: For the shouldClone case, this could be micro-optimized a bit by
     // assuming that after the first child we've already added everything.
@@ -330,17 +330,17 @@ function ChildReconciler(shouldTrackSideEffects) {
       const oldIndex = current.index;
       if (oldIndex < lastPlacedIndex) {
         // This is a move.
-        console.log(`${getDebugFiberName(newFiber)} placeChild (move, oldIndex: ${oldIndex}, lastPlacedIndex = lastPlacedIndex: ${lastPlacedIndex})`)
+        console.log(...debug.reconciler(newFiber, `placeChild (move, oldIndex: ${oldIndex}, lastPlacedIndex = lastPlacedIndex: ${lastPlacedIndex})`))
         newFiber.effectTag = Placement;
         return lastPlacedIndex;
       } else {
         // This item can stay in place.
-        console.log(`${getDebugFiberName(newFiber)} placeChild (stay, lastPlacedIndex = oldIndex: ${oldIndex}, lastPlacedIndex: ${lastPlacedIndex})`)
+        console.log(...debug.reconciler(newFiber, `placeChild (stay, lastPlacedIndex = oldIndex: ${oldIndex}, lastPlacedIndex: ${lastPlacedIndex})`))
         return oldIndex;
       }
     } else {
       // This is an insertion.
-      console.log(`${getDebugFiberName(newFiber)} placeChild (insertion, lastPlacedIndex = lastPlacedIndex: ${lastPlacedIndex})`)
+      console.log(...debug.reconciler(newFiber, `placeChild (insertion, lastPlacedIndex = lastPlacedIndex: ${lastPlacedIndex})`))
       newFiber.effectTag = Placement;
       return lastPlacedIndex;
     }
@@ -368,13 +368,13 @@ function ChildReconciler(shouldTrackSideEffects) {
         returnFiber.mode,
         expirationTime,
       );
-      console.log(`${getDebugFiberName(created)} updateTextNode (Insert)`, created)
+      console.log(...debug.reconciler(created, 'updateTextNode (Insert)', created))
       created.return = returnFiber;
       return created;
     } else {
       // Update
       const existing = useFiber(current, textContent, expirationTime);
-      console.log(`${getDebugFiberName(existing)} updateTextNode (Update)`, existing)
+      console.log(...debug.reconciler(existing, 'updateTextNode (Update)', existing))
       existing.return = returnFiber;
       return existing;
     }
@@ -625,7 +625,7 @@ function ChildReconciler(shouldTrackSideEffects) {
       // Text nodes don't have keys, so we neither have to check the old nor
       // new node for the key. If both are text nodes, they match.
       const matchedFiber = existingChildren.get(newIdx) || null;
-      console.log(`matchedFiber:`, matchedFiber)
+      console.log(...debug.reconciler(newChild, `matchedFiber:`, matchedFiber))
       return updateTextNode(
         returnFiber,
         matchedFiber,
@@ -641,7 +641,7 @@ function ChildReconciler(shouldTrackSideEffects) {
             existingChildren.get(
               newChild.key === null ? newIdx : newChild.key,
             ) || null;
-            console.log(`matchedFiber:`, matchedFiber)
+            console.log(...debug.reconciler(newChild, `matchedFiber:`, matchedFiber))
           if (newChild.type === REACT_FRAGMENT_TYPE) {
             return updateFragment(
               returnFiber,
@@ -782,7 +782,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     let newIdx = 0;
     let nextOldFiber = null;
 
-    console.log(`${getDebugFiberName(returnFiber)} reconcileChildrenArray`)
+    console.log(...debug.reconciler(returnFiber, 'reconcileChildrenArray'))
 
     for (; oldFiber !== null && newIdx < newChildren.length; newIdx++) {
       if (oldFiber.index > newIdx) {
@@ -791,7 +791,7 @@ function ChildReconciler(shouldTrackSideEffects) {
       } else {
         nextOldFiber = oldFiber.sibling;
       }
-      console.log(`[update loop 1] ${getDebugFiberName(oldFiber)} updateSlot`)
+      console.log(...debug.reconciler(oldFiber, `updateSlot (index: ${newIdx}, newChildren: ${getDebugItemName(newChildren[newIdx])})`))
       const newFiber = updateSlot(
         returnFiber,
         oldFiber,
@@ -841,12 +841,14 @@ function ChildReconciler(shouldTrackSideEffects) {
       // If we don't have any more existing children we can choose a fast path
       // since the rest will all be insertions.
       for (; newIdx < newChildren.length; newIdx++) {
+        console.log(...debug.reconciler(returnFiber, `reconcile newChildren ${getDebugItemName(newChildren[newIdx])} (index: ${newIdx})`))
+
         const newFiber = createChild(
           returnFiber,
           newChildren[newIdx],
           expirationTime,
         );
-        console.log('[newChildren loop] newFiber')
+        
         if (!newFiber) {
           continue;
         }
@@ -866,12 +868,12 @@ function ChildReconciler(shouldTrackSideEffects) {
     const existingChildren = mapRemainingChildren(returnFiber, oldFiber);
 
     if (existingChildren.size) {
-      console.log(`${getDebugFiberName(returnFiber)} existingChildren:`, existingChildren)
+      console.log(...debug.reconciler(returnFiber, `existingChildren:`, existingChildren))
     }
     
     // Keep scanning and use the map to restore deleted items as moves.
     for (; newIdx < newChildren.length; newIdx++) {
-      console.log(`[scanning existingChildren loop] start (index: ${newIdx})`)
+      console.log(...debug.reconciler(returnFiber, `scan newChidren with existingChildren (index: ${newIdx}, newChildren: ${getDebugItemName(newChildren[newIdx])})`))
       const newFiber = updateFromMap(
         existingChildren,
         returnFiber,
@@ -900,13 +902,12 @@ function ChildReconciler(shouldTrackSideEffects) {
         }
         previousNewFiber = newFiber;
       }
-      console.log(`[scanning existingChildren loop] end (index: ${newIdx})`)
     }
 
     if (shouldTrackSideEffects) {
       // Any existing children that weren't consumed above were deleted. We need
       // to add them to the deletion list.
-      console.log(`${getDebugFiberName(returnFiber)} delete existingChildren`)
+      console.log(...debug.reconciler(returnFiber, `delete existingChildren`))
       existingChildren.forEach(child => deleteChild(returnFiber, child));
     }
 
@@ -1381,7 +1382,7 @@ export function cloneChildFibers(
   if (workInProgress.child === null) {
     return;
   }
-  console.log(`${getDebugFiberName(workInProgress)} cloneChildFibers`)
+  console.log(...debug.reconciler(workInProgress, 'cloneChildFibers'))
 
   let currentChild = workInProgress.child;
   let newChild = createWorkInProgress(

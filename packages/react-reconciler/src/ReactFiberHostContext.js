@@ -15,7 +15,7 @@ import invariant from 'shared/invariant';
 
 import {getChildHostContext, getRootHostContext} from './ReactFiberHostConfig';
 import {createCursor, push, pop} from './ReactFiberStack';
-import {getDebugFiberName, debug} from 'shared/debug'
+import {debug} from 'shared/debug'
 
 declare class NoContextT {}
 const NO_CONTEXT: NoContextT = ({}: any);

@@ -82,7 +82,7 @@ import {
   prepareToHydrateHostTextInstance,
   popHydrationState,
 } from './ReactFiberHydrationContext';
-import { getDebugFiberName, debug, getDebugItemName } from 'shared/debug';
+import {debug, getDebugItemName } from 'shared/debug';
 
 function markUpdate(workInProgress: Fiber) {
   // Tag the fiber with an update effect. This turns a Placement into

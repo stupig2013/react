@@ -37,6 +37,8 @@ import SyntheticUIEvent from './SyntheticUIEvent';
 import SyntheticWheelEvent from './SyntheticWheelEvent';
 import getEventCharCode from './getEventCharCode';
 
+import {debug} from 'shared/debug'
+
 /**
  * Turns
  * ['abort', ...]
@@ -217,7 +219,7 @@ const SimpleEventPlugin: PluginModule<MouseEvent> & {
     nativeEvent: MouseEvent,
     nativeEventTarget: EventTarget,
   ): null | ReactSyntheticEvent {
-    console.log(`[SimpleEventPlugin] extractEvents {NativeEvent:${topLevelType}} on`, targetInst)
+    console.log(...debug.event(undefined, `SimpleEventPlugin extractEvents {NativeEvent:${topLevelType}} on`, targetInst))
     const dispatchConfig = topLevelEventsToDispatchConfig[topLevelType];
     if (!dispatchConfig) {
       return null;
@@ -326,9 +328,9 @@ const SimpleEventPlugin: PluginModule<MouseEvent> & {
       nativeEvent,
       nativeEventTarget,
     );
-    console.log(`{SyntheticEvent:${dispatchConfig.phasedRegistrationNames['bubbled']}} created`, dispatchConfig)
+    console.log(...debug.event(event, 'created, dispatchConfig:', dispatchConfig))
     accumulateTwoPhaseDispatches(event);
-    console.log(`{SyntheticEvent:${dispatchConfig.phasedRegistrationNames['bubbled']}} accumulateTwoPhaseDispatches, event._dispatchListeners:`, event._dispatchListeners)
+    console.log(...debug.event(event, `accumulateTwoPhaseDispatches, event._dispatchListeners:`, event._dispatchListeners))
     return event;
   },
 };

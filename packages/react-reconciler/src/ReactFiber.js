@@ -549,7 +549,6 @@ export function createFiberFromElement(
   mode: TypeOfMode,
   expirationTime: ExpirationTime,
 ): Fiber {
-  console.log(...debug.reconciler(element, 'createFiberFromElement'))
   let owner = null;
   if (__DEV__) {
     owner = element._owner;
@@ -569,6 +568,7 @@ export function createFiberFromElement(
     fiber._debugSource = element._source;
     fiber._debugOwner = element._owner;
   }
+  console.log(...debug.reconciler(element, 'createFiberFromElement', fiber))
   return fiber;
 }
 
@@ -650,10 +650,11 @@ export function createFiberFromSuspense(
 export function createFiberFromText(
   content: string,
   mode: TypeOfMode,
-  expirationTime: ExpirationTime,
+expirationTime: ExpirationTime,
 ): Fiber {
   const fiber = createFiber(HostText, content, null, mode);
   fiber.expirationTime = expirationTime;
+  console.log(...debug.reconciler(content, 'createFiberFromText', fiber))
   return fiber;
 }
 

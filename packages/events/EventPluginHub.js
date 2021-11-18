@@ -27,6 +27,8 @@ import type {Fiber} from 'react-reconciler/src/ReactFiber';
 import type {AnyNativeEvent} from './PluginModuleType';
 import type {TopLevelType} from './TopLevelEventTypes';
 
+import {debug} from 'shared/debug'
+
 /**
  * Internal queue of events that have accumulated their dispatches and are
  * waiting to have their dispatches executed.
@@ -41,7 +43,7 @@ let eventQueue: ?(Array<ReactSyntheticEvent> | ReactSyntheticEvent) = null;
  */
 const executeDispatchesAndRelease = function(event: ReactSyntheticEvent) {
   if (event) {
-    console.log(`[Event] executeDispatchesAndRelease`)
+    console.log(...debug.event(event, 'executeDispatchesAndRelease'))
     executeDispatchesInOrder(event);
 
     if (!event.isPersistent()) {
@@ -166,6 +168,7 @@ function extractEvents(
   nativeEventTarget: EventTarget,
 ): Array<ReactSyntheticEvent> | ReactSyntheticEvent | null {
   let events = null;
+  console.log(...debug.event(undefined, 'extractEvents start'))
   for (let i = 0; i < plugins.length; i++) {
     // Not every plugin in the ordering may be loaded at runtime.
     const possiblePlugin: PluginModule<AnyNativeEvent> = plugins[i];
@@ -181,14 +184,14 @@ function extractEvents(
       }
     }
   }
-  console.log(`[Event] extractEvents, events:`, events)
+  console.log(...debug.event(undefined, 'extractEvents end, events:', events))
   return events;
 }
 
 export function runEventsInBatch(
   events: Array<ReactSyntheticEvent> | ReactSyntheticEvent | null,
 ) {
-  console.log(`[Event] runEventsInBatch`)
+  console.log(...debug.event(undefined, 'runEventsInBatch'))
   if (events !== null) {
     eventQueue = accumulateInto(eventQueue, events);
   }
@@ -218,7 +221,7 @@ export function runExtractedEventsInBatch(
   nativeEvent: AnyNativeEvent,
   nativeEventTarget: EventTarget,
 ) {
-  console.log(`[Event] runExtractedEventsInBatch (NativeEvent: ${topLevelType})`)
+  console.log(...debug.event(undefined, `runExtractedEventsInBatch (NativeEvent: ${topLevelType})`))
   const events = extractEvents(
     topLevelType,
     targetInst,

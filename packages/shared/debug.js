@@ -6,7 +6,7 @@ const fiberTagMap = {
 const debugType = {
   react: false,
   reconciler: true,
-  scheduler: false,
+  scheduler: true,
   event: false
 }
 
@@ -33,8 +33,10 @@ export function getDebugFiberName(fiber) {
 
 export function getDebugItemName(item) {
   let rs = ''
-  if (item === null || item === undefined) {
+  if (item === null || item === undefined || typeof item === 'boolean') {
     rs = item
+  } else if (typeof item === 'string' || typeof item === 'number') {
+    rs = `<${typeof item}:${item}>`
   } else if (typeof item === 'object') {
     switch (true) {
       case item.hasOwnProperty('containerInfo'): { // FiberRoot
@@ -64,6 +66,11 @@ export function getDebugItemName(item) {
 
       case item instanceof HTMLElement: {
         rs = `<HTMLElement:${item.tagName.toLowerCase()}>`
+        break
+      }
+
+      case item.hasOwnProperty('dispatchConfig'): {
+        rs = `<SyntheticEvent:${item.dispatchConfig.phasedRegistrationNames['bubbled']}>`
         break
       }
     }

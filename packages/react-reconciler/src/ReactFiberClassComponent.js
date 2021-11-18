@@ -55,7 +55,7 @@ import {
   flushPassiveEffects,
 } from './ReactFiberScheduler';
 
-import {getDebugFiberName, debug} from 'shared/debug'
+import {debug} from 'shared/debug'
 
 const fakeInternalInstance = {};
 const isArray = Array.isArray;
@@ -836,7 +836,7 @@ function resumeMountClassInstance(
   newProps: any,
   renderExpirationTime: ExpirationTime,
 ): boolean {
-  console.log(`${getDebugFiberName(workInProgress)} resumeMountClassInstance`)
+  console.log(...debug.reconciler(workInProgress, 'resumeMountClassInstance'))
   const instance = workInProgress.stateNode;
 
   const oldProps = workInProgress.memoizedProps;

@@ -42,7 +42,7 @@ import getComponentName from 'shared/getComponentName';
 import is from 'shared/objectIs';
 import {markWorkInProgressReceivedUpdate} from './ReactFiberBeginWork';
 
-import {getDebugFiberName} from 'shared/debug'
+import {debug} from 'shared/debug'
 
 const {ReactCurrentDispatcher} = ReactSharedInternals;
 
@@ -293,7 +293,7 @@ export function renderWithHooks(
   refOrContext: any,
   nextRenderExpirationTime: ExpirationTime,
 ): any {
-  console.log(`${getDebugFiberName(workInProgress)} renderWithHooks`)
+  console.log(...debug.reconciler(workInProgress,'renderWithHooks'))
   renderExpirationTime = nextRenderExpirationTime;
   currentlyRenderingFiber = workInProgress;
   firstCurrentHook = nextCurrentHook =

@@ -2561,13 +2561,13 @@ function interactiveUpdates<A, B, R>(fn: (A, B) => R, a: A, b: B): R {
   const previousIsBatchingUpdates = isBatchingUpdates;
   isBatchingInteractiveUpdates = true;
   isBatchingUpdates = true;
-  console.log(`[Scheduler] interactiveUpdates (isBatchingInteractiveUpdates = ${isBatchingInteractiveUpdates}, isBatchingUpdates = ${isBatchingUpdates})`)
+  console.log(...debug.scheduler(undefined, `interactiveUpdates (isBatchingInteractiveUpdates = ${isBatchingInteractiveUpdates}, isBatchingUpdates = ${isBatchingUpdates})`))
   try {
     return fn(a, b);
   } finally {
     isBatchingInteractiveUpdates = previousIsBatchingInteractiveUpdates;
     isBatchingUpdates = previousIsBatchingUpdates;
-    console.log(`[Scheduler] interactiveUpdates finally (isBatchingInteractiveUpdates = ${isBatchingInteractiveUpdates}, isBatchingUpdates = ${isBatchingUpdates}, isRendering: ${isRendering})`)
+    console.log(...debug.scheduler(undefined, `interactiveUpdates finally (isBatchingInteractiveUpdates = ${isBatchingInteractiveUpdates}, isBatchingUpdates = ${isBatchingUpdates}, isRendering: ${isRendering})`))
     if (!isBatchingUpdates && !isRendering) {
       performSyncWork();
     }

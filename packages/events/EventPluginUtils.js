@@ -9,6 +9,8 @@ import {invokeGuardedCallbackAndCatchFirstError} from 'shared/ReactErrorUtils';
 import invariant from 'shared/invariant';
 import warningWithoutStack from 'shared/warningWithoutStack';
 
+import {debug} from 'shared/debug'
+
 export let getFiberCurrentPropsFromNode = null;
 export let getInstanceFromNode = null;
 export let getNodeFromInstance = null;
@@ -64,7 +66,7 @@ if (__DEV__) {
  * @param {*} inst Internal component instance
  */
 function executeDispatch(event, listener, inst) {
-  console.log(`[Event] executeDispatch ( listner.apply(undefined, event) )`)
+  console.log(...debug.event(event, 'executeDispatch ( listner.apply(undefined, event) )'))
   const type = event.type || 'unknown-event';
   event.currentTarget = getNodeFromInstance(inst);
   invokeGuardedCallbackAndCatchFirstError(type, listener, undefined, event);
@@ -75,7 +77,7 @@ function executeDispatch(event, listener, inst) {
  * Standard/simple iteration through an event's collected dispatches.
  */
 export function executeDispatchesInOrder(event) {
-  console.log(`[Event] executeDispatchesInOrder`)
+  console.log(...debug.event(event, 'executeDispatchesInOrder'))
   const dispatchListeners = event._dispatchListeners;
   const dispatchInstances = event._dispatchInstances;
   if (__DEV__) {
