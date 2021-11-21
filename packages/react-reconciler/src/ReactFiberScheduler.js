@@ -510,6 +510,7 @@ function commitAllLifeCycles(
     }
 
     if (effectTag & Passive) {
+      console.log(...debug.scheduler(nextEffect, 'has Passive effect', nextEffect))
       rootWithPendingPassiveEffects = finishedRoot;
     }
 
@@ -800,6 +801,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     // after the next paint. Schedule an callback to fire them in an async
     // event. To ensure serial execution, the callback will be flushed early if
     // we enter rootWithPendingPassiveEffects commit phase before then.
+    console.log(...debug.reconciler(root, 'schedulePassiveEffects(commitPassiveEffects.bind(null, root, firstEffect)), firstEffect', firstEffect))
     let callback = commitPassiveEffects.bind(null, root, firstEffect);
     if (enableSchedulerTracing) {
       // TODO: Avoid this extra callback by mutating the tracing ref directly,

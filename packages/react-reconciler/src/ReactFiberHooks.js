@@ -293,7 +293,7 @@ export function renderWithHooks(
   refOrContext: any,
   nextRenderExpirationTime: ExpirationTime,
 ): any {
-  console.log(...debug.reconciler(workInProgress,'renderWithHooks'))
+  console.log(...debug.reconciler(workInProgress, 'renderWithHooks'))
   renderExpirationTime = nextRenderExpirationTime;
   currentlyRenderingFiber = workInProgress;
   firstCurrentHook = nextCurrentHook =
@@ -465,10 +465,12 @@ function mountWorkInProgressHook(): Hook {
     }
   }
   if (workInProgressHook === null) {
+    console.log(...debug.reconciler(currentlyRenderingFiber, `mountWorkInProgressHook (first), hook:`, hook))
     // This is the first hook in the list
     firstWorkInProgressHook = workInProgressHook = hook;
   } else {
     // Append to the end of the list
+    console.log(...debug.reconciler(currentlyRenderingFiber, `mountWorkInProgressHook (next), hook:`, hook))
     workInProgressHook = workInProgressHook.next = hook;
   }
   return workInProgressHook;
@@ -487,6 +489,7 @@ function updateWorkInProgressHook(): Hook {
 
     currentHook = nextCurrentHook;
     nextCurrentHook = currentHook !== null ? currentHook.next : null;
+    console.log(...debug.reconciler(currentlyRenderingFiber, `updateWorkInProgressHook (workInProgressHook = nextWorkInProgressHook)`, workInProgressHook))
   } else {
     // Clone from the current hook.
     invariant(
@@ -508,9 +511,11 @@ function updateWorkInProgressHook(): Hook {
     if (workInProgressHook === null) {
       // This is the first hook in the list.
       workInProgressHook = firstWorkInProgressHook = newHook;
+      console.log(...debug.reconciler(currentlyRenderingFiber, `updateWorkInProgressHook (workInProgressHook = firstWorkInProgressHook = newHook)`, workInProgressHook))
     } else {
       // Append to the end of the list.
       workInProgressHook = workInProgressHook.next = newHook;
+      console.log(...debug.reconciler(currentlyRenderingFiber, `updateWorkInProgressHook (workInProgressHook = workInProgressHook.next = newHook)`, workInProgressHook))
     }
     nextCurrentHook = currentHook.next;
 
@@ -587,6 +592,7 @@ function updateReducer<S, I, A>(
   initialArg: I,
   init?: I => S,
 ): [S, Dispatch<A>] {
+  console.log(...debug.reconciler(currentlyRenderingFiber, `updateReducer (numberOfReRenders: ${numberOfReRenders})`))
   const hook = updateWorkInProgressHook();
   const queue = hook.queue;
   invariant(
@@ -755,10 +761,13 @@ function pushEffect(tag, create, destroy, deps) {
     // Circular
     next: (null: any),
   };
+  
   if (componentUpdateQueue === null) {
+    console.log(...debug.reconciler(currentlyRenderingFiber, `pushEffect (createFunctionComponentUpdateQueue), effect:`, effect))
     componentUpdateQueue = createFunctionComponentUpdateQueue();
     componentUpdateQueue.lastEffect = effect.next = effect;
   } else {
+    console.log(...debug.reconciler(currentlyRenderingFiber, `pushEffect, effect:`, effect))
     const lastEffect = componentUpdateQueue.lastEffect;
     if (lastEffect === null) {
       componentUpdateQueue.lastEffect = effect.next = effect;
@@ -1045,6 +1054,7 @@ function dispatchAction<S, A>(
     fiber === currentlyRenderingFiber ||
     (alternate !== null && alternate === currentlyRenderingFiber)
   ) {
+    console.log(...debug.reconciler(currentlyRenderingFiber, `dispatchAction (render phase update)`))
     // This is a render phase update. Stash it in a lazily-created map of
     // queue -> linked list of updates. After this render pass, we'll restart
     // and apply the stashed updates on top of the work-in-progress hook.
@@ -1083,6 +1093,7 @@ function dispatchAction<S, A>(
       eagerState: null,
       next: null,
     };
+    console.log(...debug.reconciler(fiber, `dispatchAction, update:`, update))
 
     // Append the update to the end of the list.
     const last = queue.last;

@@ -1144,7 +1144,7 @@ function mountIndeterminateComponent(
   Component,
   renderExpirationTime,
 ) {
-  console.log(...debug.reconcile(workInProgress, 'mountIndeterminateComponent'))
+  console.log(...debug.reconciler(workInProgress, 'mountIndeterminateComponent'))
   if (_current !== null) {
     // An indeterminate component only mounts if it suspended inside a non-
     // concurrent tree, in an inconsistent state. We want to treat it like

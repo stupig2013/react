@@ -173,6 +173,7 @@ if (supportsMutation) {
       rootContainerInstance,
       currentHostContext,
     );
+    console.log(...debug.reconciler(workInProgress, 'updateHostComponent updatePayload:', updatePayload))
     // TODO: Type this specific to this type of component.
     workInProgress.updateQueue = (updatePayload: any);
     // If the update payload indicates that there is a change or if there

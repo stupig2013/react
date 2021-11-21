@@ -9,6 +9,7 @@
 /* eslint-disable no-var */
 
 import {enableSchedulerDebugging} from './SchedulerFeatureFlags';
+import {debug} from 'shared/debug'
 
 // TODO: Use symbols?
 var ImmediatePriority = 1;
@@ -284,6 +285,7 @@ function unstable_wrapCallback(callback) {
 }
 
 function unstable_scheduleCallback(callback, deprecated_options) {
+  console.log(...debug.scheduler(undefined, 'unstable_scheduleCallback'))
   var startTime =
     currentEventStartTime !== -1 ? currentEventStartTime : getCurrentTime();
 
@@ -659,6 +661,7 @@ if (globalValue && globalValue._schedMock) {
   };
 
   requestHostCallback = function(callback, absoluteTimeout) {
+    console.log(...debug.reconciler(undefined, 'requestHostCallback'))
     scheduledHostCallback = callback;
     timeoutTime = absoluteTimeout;
     if (isFlushingHostCallback || absoluteTimeout < 0) {

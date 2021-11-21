@@ -313,6 +313,7 @@ function commitHookEffectList(
   mountTag: number,
   finishedWork: Fiber,
 ) {
+  console.log(...debug.scheduler(finishedWork, `commitHookEffectList (unmountTag: ${unmountTag}, mountTag: ${mountTag})`))
   const updateQueue: FunctionComponentUpdateQueue | null = (finishedWork.updateQueue: any);
   let lastEffect = updateQueue !== null ? updateQueue.lastEffect : null;
   if (lastEffect !== null) {
@@ -324,12 +325,14 @@ function commitHookEffectList(
         const destroy = effect.destroy;
         effect.destroy = undefined;
         if (destroy !== undefined) {
+          console.log(...debug.scheduler(undefined, 'call effect.destroy'))
           destroy();
         }
       }
       if ((effect.tag & mountTag) !== NoHookEffect) {
         // Mount
         const create = effect.create;
+        console.log(...debug.scheduler(undefined, 'call effect.create'))
         effect.destroy = create();
 
         if (__DEV__) {
@@ -372,6 +375,7 @@ function commitHookEffectList(
 }
 
 export function commitPassiveHookEffects(finishedWork: Fiber): void {
+  console.log(...debug.scheduler(finishedWork, 'commitPassiveHookEffects'))
   commitHookEffectList(UnmountPassive, NoHookEffect, finishedWork);
   commitHookEffectList(NoHookEffect, MountPassive, finishedWork);
 }
@@ -1111,7 +1115,6 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
     return;
   }
 
-  console.log(...debug.scheduler(finishedWork, 'commitWork'))
   switch (finishedWork.tag) {
     case FunctionComponent:
     case ForwardRef:
@@ -1137,6 +1140,7 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
         const type = finishedWork.type;
         // TODO: Type the updateQueue to be specific to host components.
         const updatePayload: null | UpdatePayload = (finishedWork.updateQueue: any);
+        console.log(...debug.scheduler(finishedWork, 'commitWork (HostComponent), updatePayload:', updatePayload))
         finishedWork.updateQueue = null;
         if (updatePayload !== null) {
           commitUpdate(

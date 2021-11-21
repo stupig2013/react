@@ -622,6 +622,7 @@ function commitUpdateEffects<State>(
   while (effect !== null) {
     const callback = effect.callback;
     if (callback !== null) {
+      console.log(...debug.scheduler(undefined, 'call callback', callback, effect))
       effect.callback = null;
       callCallback(callback, instance);
     }
