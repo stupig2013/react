@@ -539,8 +539,6 @@ export function createFiberFromTypeAndProps(
   fiber.type = resolvedType;
   fiber.expirationTime = expirationTime;
 
-  // console.log(`createFiberFromTypeAndProps`, fiber)
-
   return fiber;
 }
 

@@ -1809,7 +1809,7 @@ function beginWork(
   workInProgress: Fiber,
   renderExpirationTime: ExpirationTime,
 ): Fiber | null {
-  console.log(...debug.reconciler(workInProgress, 'beginWork'))
+  console.log(...debug.reconciler(workInProgress, `beginWork (expirationTime: ${workInProgress.expirationTime}, renderExpirationTime: ${renderExpirationTime})`))
   const updateExpirationTime = workInProgress.expirationTime;
 
   if (current !== null) {

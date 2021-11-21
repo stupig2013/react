@@ -52,6 +52,7 @@ export function markCommittedPriorityLevels(
   root: FiberRoot,
   earliestRemainingTime: ExpirationTime,
 ): void {
+  console.log(...debug.scheduler(root, `markCommittedPriorityLevels (earliestRemainingTime: ${earliestRemainingTime})`))
   root.didError = false;
 
   if (earliestRemainingTime === NoWork) {
@@ -280,6 +281,7 @@ function findNextExpirationTimeToWorkOn(completedExpirationTime, root) {
     expirationTime = earliestSuspendedTime;
   }
 
+  console.log(...debug.scheduler(root, `findNextExpirationTimeToWorkOn (nextExpirationTimeToWorkOn: ${nextExpirationTimeToWorkOn}, expirationTime: ${expirationTime})`))
   root.nextExpirationTimeToWorkOn = nextExpirationTimeToWorkOn;
   root.expirationTime = expirationTime;
 }

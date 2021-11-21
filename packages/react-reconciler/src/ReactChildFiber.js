@@ -1268,7 +1268,6 @@ function ChildReconciler(shouldTrackSideEffects) {
 
     // Handle object types
     const isObject = typeof newChild === 'object' && newChild !== null;
-
     if (isObject) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE:

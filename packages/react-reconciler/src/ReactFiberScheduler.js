@@ -598,7 +598,7 @@ function flushPassiveEffects() {
 }
 
 function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
-  console.log('[Scheduler] commitRoot start')
+  console.log(...debug.scheduler(root, 'commitRoot start (isWorking = true, isCommitting = true)'))
   isWorking = true;
   isCommitting = true;
   startCommitTimer();
@@ -641,6 +641,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
 
   let firstEffect;
   if (finishedWork.effectTag > PerformedWork) {
+    console.log(...debug.scheduler(root, `add finishedWork to effect link (effectTag: ${finishedWork.effectTag})`))
     // A fiber's effect list consists only of its children, not itself. So if
     // the root has an effect, we need to add it to the end of the list. The
     // resulting list is the set that would belong to the root's parent, if
@@ -656,9 +657,11 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     firstEffect = finishedWork.firstEffect;
   }
 
+  console.log(...debug.scheduler(finishedWork, 'firstEffect:', firstEffect))
+
   prepareForCommit(root.containerInfo);
 
-  console.log('[Scheduler] invoke instances getSnapshotBeforeUpdate start')
+  console.log(...debug.scheduler(root, 'invoke instances getSnapshotBeforeUpdate start'))
   // Invoke instances of getSnapshotBeforeUpdate before mutation.
   nextEffect = firstEffect;
   startCommitSnapshotEffectsTimer();
@@ -693,7 +696,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     }
   }
   stopCommitSnapshotEffectsTimer();
-  console.log('[Scheduler] invoke instances getSnapshotBeforeUpdate end')
+  console.log(...debug.scheduler(root, 'invoke instances getSnapshotBeforeUpdate end'))
 
   if (enableProfilerTimer) {
     // Mark the current commit time to be shared by all Profilers in this batch.
@@ -701,7 +704,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     recordCommitTime();
   }
 
-  console.log('[Scheduler] commit side-effects start')
+  console.log(...debug.scheduler(root, 'commit side-effects start'))
   // Commit all the side-effects within a tree. We'll do this in two passes.
   // The first pass performs all the host insertions, updates, deletions and
   // ref unmounts.
@@ -738,7 +741,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     }
   }
   stopCommitHostEffectsTimer();
-  console.log('[Scheduler] commit side-effects end')
+  console.log(...debug.scheduler(root, 'commit side-effects end'))
 
   resetAfterCommit(root.containerInfo);
 
@@ -748,7 +751,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
   // the finished work is current during componentDidMount/Update.
   root.current = finishedWork;
 
-  console.log('[Scheduler] perform lifecycles start')
+  console.log(...debug.scheduler(root, 'perform lifecycles start'))
   // In the second pass we'll perform all life-cycles and ref callbacks.
   // Life-cycles happen as a separate pass so that all placements, updates,
   // and deletions in the entire tree have already been invoked.
@@ -790,8 +793,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
       }
     }
   }
-
-  console.log('[Scheduler] perform lifecycles end')
+  console.log(...debug.scheduler(root, 'perform lifecycles end'))
 
   if (firstEffect !== null && rootWithPendingPassiveEffects !== null) {
     // This commit included a passive effect. These do not need to fire until
@@ -887,7 +889,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     }
   }
 
-  console.log('[Scheduler] commitRoot end')
+  console.log(...debug.scheduler(root, 'commitRoot end (isCommitting = false, isWorking = false)'))
 }
 
 function resetChildExpirationTime(
@@ -1022,6 +1024,7 @@ function completeUnitOfWork(workInProgress: Fiber): Fiber | null {
         // Do not append effects to parents if a sibling failed to complete
         (returnFiber.effectTag & Incomplete) === NoEffect
       ) {
+        console.log(...debug.scheduler(workInProgress, `link effect to returnFiber ${getDebugItemName(returnFiber)} (firstEffect: ${workInProgress.firstEffect && getDebugItemName(workInProgress.firstEffect)}, effectTag: ${workInProgress.effectTag})`))
         // Append all the effects of the subtree and this fiber onto the effect
         // list of the parent. The completion order of the children affects the
         // side-effect order.
@@ -1525,7 +1528,7 @@ function renderRoot(root: FiberRoot, isYieldy: boolean): void {
 
   // Ready to commit.
   onComplete(root, rootWorkInProgress, expirationTime);
-  console.log(...debug.scheduler(root, 'renderRoot end (isWorking = false)'))
+  console.log(...debug.scheduler(root, 'renderRoot end (isWorking = false, root.finishedWork = root.current.alternate)'))
 }
 
 function captureCommitPhaseError(sourceFiber: Fiber, value: mixed) {
@@ -2443,6 +2446,7 @@ function completeRoot(
   finishedWork: Fiber,
   expirationTime: ExpirationTime,
 ): void {
+  console.log(...debug.scheduler(root, 'completeRoot, finishedWork:', finishedWork))
   // Check if there's a batch that matches this expiration time.
   const firstBatch = root.firstBatch;
   if (firstBatch !== null && firstBatch._expirationTime >= expirationTime) {

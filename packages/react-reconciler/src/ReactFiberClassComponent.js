@@ -196,6 +196,7 @@ const classComponentUpdater = {
       update.callback = callback;
     }
 
+    console.log(...debug.scheduler(fiber, 'enqueueSetState, update:', update))
     flushPassiveEffects();
     enqueueUpdate(fiber, update);
     scheduleWork(fiber, expirationTime);
@@ -511,7 +512,6 @@ function constructClassInstance(
   props: any,
   renderExpirationTime: ExpirationTime,
 ): any {
-  console.log(...debug.reconciler(workInProgress, 'constructClassInstance'))
   let isLegacyContextConsumer = false;
   let unmaskedContext = emptyContextObject;
   let context = null;
@@ -560,6 +560,7 @@ function constructClassInstance(
     instance.state !== null && instance.state !== undefined
       ? instance.state
       : null);
+  console.log(...debug.reconciler(workInProgress, 'constructClassInstance', instance))
   console.log(...debug.reconciler(workInProgress, 'init state:', state))
   adoptClassInstance(workInProgress, instance);
 

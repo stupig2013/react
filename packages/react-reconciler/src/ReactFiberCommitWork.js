@@ -103,6 +103,8 @@ import {
 } from './ReactHookEffectTags';
 import {didWarnAboutReassigningProps} from './ReactFiberBeginWork';
 
+import {debug} from 'shared/debug'
+
 let didWarnAboutUndefinedSnapshotBeforeUpdate: Set<mixed> | null = null;
 if (__DEV__) {
   didWarnAboutUndefinedSnapshotBeforeUpdate = new Set();
@@ -909,6 +911,7 @@ function commitPlacement(finishedWork: Fiber): void {
   if (!supportsMutation) {
     return;
   }
+  console.log(...debug.scheduler(finishedWork, 'commitPlacement'))
 
   // Recursively insert all host nodes into the parent.
   const parentFiber = getHostParentFiber(finishedWork);
@@ -944,8 +947,8 @@ function commitPlacement(finishedWork: Fiber): void {
     parentFiber.effectTag &= ~ContentReset;
   }
 
-  const before = getHostSibling(finishedWork);
   // We only have the top Fiber that was inserted but we need recurse down its
+  const before = getHostSibling(finishedWork);
   // children to find all the terminal nodes.
   let node: Fiber = finishedWork;
   while (true) {
@@ -958,6 +961,7 @@ function commitPlacement(finishedWork: Fiber): void {
         }
       } else {
         if (isContainer) {
+          console.log(...debug.scheduler(node.stateNode, 'appendChildToContainer, container:', parent))
           appendChildToContainer(parent, node.stateNode);
         } else {
           appendChild(parent, node.stateNode);
@@ -1077,6 +1081,7 @@ function unmountHostComponents(current): void {
 }
 
 function commitDeletion(current: Fiber): void {
+  console.log(...debug.scheduler(current, 'commitDeletion', current))
   if (supportsMutation) {
     // Recursively delete all host nodes from the parent.
     // Detach refs and call componentWillUnmount() on the whole subtree.
@@ -1106,6 +1111,7 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
     return;
   }
 
+  console.log(...debug.scheduler(finishedWork, 'commitWork'))
   switch (finishedWork.tag) {
     case FunctionComponent:
     case ForwardRef:
@@ -1158,6 +1164,7 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
       // this case.
       const oldText: string =
         current !== null ? current.memoizedProps : newText;
+      console.log(...debug.scheduler(finishedWork, `commitTextUpdate (oldText: ${oldText}, newText: ${newText})`))
       commitTextUpdate(textInstance, oldText, newText);
       return;
     }

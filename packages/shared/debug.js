@@ -10,27 +10,6 @@ const debugType = {
   event: false
 }
 
-export function getDebugFiberName(fiber) {
-  let rs
-  switch (true) {
-    case fiber === undefined || fiber === null:
-      rs = fiber
-      break
-    case typeof fiber.type === 'function':
-      rs = fiber.type.name
-      break
-    case typeof fiber.type === 'string':
-      rs = fiber.type
-      break
-    case fiber.containerInfo !== undefined:
-      rs = `FiberRoot #${fiber.containerInfo.id}`
-      break
-    default:
-      rs = fiberTagMap[fiber.tag] || `WorkTag ${fiber.tag}`
-  }
-  return `<${rs}>`
-}
-
 export function getDebugItemName(item) {
   let rs = ''
   if (item === null || item === undefined || typeof item === 'boolean') {
@@ -64,12 +43,12 @@ export function getDebugItemName(item) {
         break
       }
 
-      case item instanceof HTMLElement: {
+      case item instanceof HTMLElement: { // HTMLElement
         rs = `<HTMLElement:${item.tagName.toLowerCase()}>`
         break
       }
 
-      case item.hasOwnProperty('dispatchConfig'): {
+      case item.hasOwnProperty('dispatchConfig'): { // SyntheticEvent
         rs = `<SyntheticEvent:${item.dispatchConfig.phasedRegistrationNames['bubbled']}>`
         break
       }
