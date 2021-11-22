@@ -60,7 +60,9 @@ function ensureHostCallbackIsScheduled() {
   var expirationTime = firstCallbackNode.expirationTime;
   if (!isHostCallbackScheduled) {
     isHostCallbackScheduled = true;
+    console.log(...debug.scheduler(undefined, `ensureHostCallbackIsScheduled (isHostCallbackScheduled = ${isHostCallbackScheduled})`))
   } else {
+    console.log(...debug.scheduler(undefined, `ensureHostCallbackIsScheduled (cancelHostCallback)`))
     // Cancel the existing host callback.
     cancelHostCallback();
   }
@@ -69,6 +71,7 @@ function ensureHostCallbackIsScheduled() {
 
 function flushFirstCallback() {
   var flushedNode = firstCallbackNode;
+  console.log(...debug.reconciler(undefined, `flushFirstCallback, firstCallbackNode:`, firstCallbackNode))
 
   // Remove the node from the list before calling the callback. That way the
   // list is in a consistent state even if the callback throws.
@@ -179,6 +182,7 @@ function flushImmediateWork() {
 }
 
 function flushWork(didTimeout) {
+  console.log(...debug.scheduler(undefined, `flushWork (didTimeout: ${didTimeout})`))
   // Exit right away if we're currently paused
 
   if (enableSchedulerDebugging && isSchedulerPaused) {
@@ -285,7 +289,6 @@ function unstable_wrapCallback(callback) {
 }
 
 function unstable_scheduleCallback(callback, deprecated_options) {
-  console.log(...debug.scheduler(undefined, 'unstable_scheduleCallback'))
   var startTime =
     currentEventStartTime !== -1 ? currentEventStartTime : getCurrentTime();
 
@@ -329,10 +332,12 @@ function unstable_scheduleCallback(callback, deprecated_options) {
   // by insertion. So the new callback is inserted any other callback with
   // equal expiration.
   if (firstCallbackNode === null) {
+    console.log(...debug.scheduler(undefined, `unstable_scheduleCallback (first newNode)`, newNode))
     // This is the first callback in the list.
     firstCallbackNode = newNode.next = newNode.previous = newNode;
     ensureHostCallbackIsScheduled();
   } else {
+    console.log(...debug.scheduler(undefined, `unstable_scheduleCallback (insert newNode)`, newNode))
     var next = null;
     var node = firstCallbackNode;
     do {
@@ -582,6 +587,7 @@ if (globalValue && globalValue._schedMock) {
 
     var currentTime = getCurrentTime();
 
+    console.log(...debug.scheduler(undefined, `channel.port1 onmessage (frameDeadline: ${frameDeadline}, currentTime: ${currentTime}, isMessageEventScheduled = false)`))
     var didTimeout = false;
     if (frameDeadline - currentTime <= 0) {
       // There's no time left in this idle period. Check if the callback has
@@ -600,6 +606,7 @@ if (globalValue && globalValue._schedMock) {
         // Exit without invoking the callback.
         scheduledHostCallback = prevScheduledCallback;
         timeoutTime = prevTimeoutTime;
+        console.log(...debug.reconciler(undefined, `return because no time left`))
         return;
       }
     }
@@ -607,9 +614,11 @@ if (globalValue && globalValue._schedMock) {
     if (prevScheduledCallback !== null) {
       isFlushingHostCallback = true;
       try {
+        console.log(...debug.scheduler(undefined, `prevScheduledCallback (didTimeout: ${didTimeout}, isFlushingHostCallback = true)`))
         prevScheduledCallback(didTimeout);
       } finally {
         isFlushingHostCallback = false;
+        console.log(...debug.scheduler(undefined, `prevScheduledCallback finally (isFlushingHostCallback = flase)`))
       }
     }
   };
@@ -632,6 +641,7 @@ if (globalValue && globalValue._schedMock) {
     }
 
     var nextFrameTime = rafTime - frameDeadline + activeFrameTime;
+    console.log(...debug.scheduler(undefined, `animationTick (rafTime: ${rafTime}, frameDeadline: ${frameDeadline}, activeFrameTime: ${activeFrameTime}, previousFrameTime: ${previousFrameTime}, nextFrameTime = ${nextFrameTime})`))
     if (
       nextFrameTime < activeFrameTime &&
       previousFrameTime < activeFrameTime
@@ -650,12 +660,14 @@ if (globalValue && globalValue._schedMock) {
       // missed frame deadlines.
       activeFrameTime =
         nextFrameTime < previousFrameTime ? previousFrameTime : nextFrameTime;
+      console.log(...debug.scheduler(undefined, 'reset activeFrameTime:', activeFrameTime))
     } else {
       previousFrameTime = nextFrameTime;
     }
     frameDeadline = rafTime + activeFrameTime;
     if (!isMessageEventScheduled) {
       isMessageEventScheduled = true;
+      console.log(...debug.scheduler(undefined, `port.postMessage (isMessageEventScheduled = true)`))
       port.postMessage(undefined);
     }
   };
@@ -673,6 +685,7 @@ if (globalValue && globalValue._schedMock) {
       // might want to still have setTimeout trigger rIC as a backup to ensure
       // that we keep performing work.
       isAnimationFrameScheduled = true;
+      console.log(...debug.reconciler(undefined, `requestAnimationFrameWithTimeout (isAnimationFrameScheduled = true)`))
       requestAnimationFrameWithTimeout(animationTick);
     }
   };

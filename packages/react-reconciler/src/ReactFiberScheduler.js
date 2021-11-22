@@ -529,6 +529,7 @@ function commitPassiveEffects(root: FiberRoot, firstEffect: Fiber): void {
   // Set this to true to prevent re-entrancy
   const previousIsRendering = isRendering;
   isRendering = true;
+  console.log(...debug.reconciler(root, `commitPassiveEffects start (isRendering = ${isRendering}, previousIsRendering: ${previousIsRendering})`))
 
   let effect = firstEffect;
   do {
@@ -565,6 +566,7 @@ function commitPassiveEffects(root: FiberRoot, firstEffect: Fiber): void {
 
   isRendering = previousIsRendering;
 
+  console.log(...debug.reconciler(root, `commitPassiveEffects end (isRendering = ${previousIsRendering})`))
   // Check if work was scheduled by one of the effects
   const rootExpirationTime = root.expirationTime;
   if (rootExpirationTime !== NoWork) {
@@ -801,7 +803,7 @@ function commitRoot(root: FiberRoot, finishedWork: Fiber): void {
     // after the next paint. Schedule an callback to fire them in an async
     // event. To ensure serial execution, the callback will be flushed early if
     // we enter rootWithPendingPassiveEffects commit phase before then.
-    console.log(...debug.reconciler(root, 'schedulePassiveEffects(commitPassiveEffects.bind(null, root, firstEffect)), firstEffect', firstEffect))
+    console.log(...debug.reconciler(root, 'schedulePassiveEffects(commitPassiveEffects.bind(null, root, firstEffect)), firstEffect:', firstEffect))
     let callback = commitPassiveEffects.bind(null, root, firstEffect);
     if (enableSchedulerTracing) {
       // TODO: Avoid this extra callback by mutating the tracing ref directly,

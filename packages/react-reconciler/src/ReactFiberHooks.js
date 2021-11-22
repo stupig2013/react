@@ -797,6 +797,7 @@ function updateRef<T>(initialValue: T): {current: T} {
 }
 
 function mountEffectImpl(fiberEffectTag, hookEffectTag, create, deps): void {
+  console.log(...debug.reconciler(currentlyRenderingFiber, `mountEffectImpl (fiberEffectTag = ${fiberEffectTag}, hookEffectTag = ${hookEffectTag})`))
   const hook = mountWorkInProgressHook();
   const nextDeps = deps === undefined ? null : deps;
   sideEffectTag |= fiberEffectTag;
@@ -814,12 +815,14 @@ function updateEffectImpl(fiberEffectTag, hookEffectTag, create, deps): void {
     if (nextDeps !== null) {
       const prevDeps = prevEffect.deps;
       if (areHookInputsEqual(nextDeps, prevDeps)) {
+        console.log(...debug.reconciler(currentlyRenderingFiber, `updateEffectImpl (no update because deps equal, fiberEffectTag = ${fiberEffectTag}, hookEffectTag = ${hookEffectTag})`))
         pushEffect(NoHookEffect, create, destroy, nextDeps);
         return;
       }
     }
   }
 
+  console.log(...debug.reconciler(currentlyRenderingFiber, `updateEffectImpl (fiberEffectTag = ${fiberEffectTag}, hookEffectTag = ${hookEffectTag})`))
   sideEffectTag |= fiberEffectTag;
   hook.memoizedState = pushEffect(hookEffectTag, create, destroy, nextDeps);
 }
@@ -828,6 +831,7 @@ function mountEffect(
   create: () => (() => void) | void,
   deps: Array<mixed> | void | null,
 ): void {
+  console.log(...debug.reconciler(currentlyRenderingFiber, `useEffect (mount)`))
   return mountEffectImpl(
     UpdateEffect | PassiveEffect,
     UnmountPassive | MountPassive,
@@ -840,6 +844,7 @@ function updateEffect(
   create: () => (() => void) | void,
   deps: Array<mixed> | void | null,
 ): void {
+  console.log(...debug.reconciler(currentlyRenderingFiber, `useEffect (update)`))
   return updateEffectImpl(
     UpdateEffect | PassiveEffect,
     UnmountPassive | MountPassive,
@@ -852,6 +857,7 @@ function mountLayoutEffect(
   create: () => (() => void) | void,
   deps: Array<mixed> | void | null,
 ): void {
+  console.log(...debug.reconciler(currentlyRenderingFiber, `useLayoutEffect (mount)`))
   return mountEffectImpl(
     UpdateEffect,
     UnmountMutation | MountLayout,
@@ -864,6 +870,7 @@ function updateLayoutEffect(
   create: () => (() => void) | void,
   deps: Array<mixed> | void | null,
 ): void {
+  console.log(...debug.reconciler(currentlyRenderingFiber, `useLayoutEffect (update)`))
   return updateEffectImpl(
     UpdateEffect,
     UnmountMutation | MountLayout,

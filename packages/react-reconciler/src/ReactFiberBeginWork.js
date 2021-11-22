@@ -531,6 +531,7 @@ function updateFunctionComponent(
   nextProps: any,
   renderExpirationTime,
 ) {
+  console.log(...debug.reconciler(workInProgress, 'updateFunctionComponent'))
   if (__DEV__) {
     if (workInProgress.type !== workInProgress.elementType) {
       // Lazy component props can't be validated in createElement

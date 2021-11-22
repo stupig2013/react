@@ -7,7 +7,7 @@ const debugType = {
   react: false,
   reconciler: true,
   scheduler: true,
-  event: false
+  event: true
 }
 
 export function getDebugItemName(item) {
